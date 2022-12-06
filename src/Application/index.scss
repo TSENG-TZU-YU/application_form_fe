@@ -1,0 +1,119 @@
+@import '../../src/styles/global.scss';
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+.scroll {
+    width: 100%;
+    height: calc(100vh - 70px);
+    overflow-y: scroll;
+    .container {
+        width: 70%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+        h3 {
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        .vector {
+            width: 80%;
+            border-top: 2px solid black;
+        }
+        .box {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+            div {
+                margin-top: 10px;
+                margin-left: 15px;
+            }
+            .handler {
+                width: 250px;
+                text-align: center;
+            }
+            .check {
+                display: flex;
+                margin-top: 0;
+            }
+            & .check:nth-child(2) {
+                margin-left: 8px;
+            }
+        }
+
+        .add {
+            width: 80%;
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .needs {
+            width: 80%;
+            justify-content: start;
+            background-color: antiquewhite;
+            & .need:first-child {
+                .two {
+                    display: none;
+                }
+                .one {
+                    display: block;
+                }
+            }
+            .need {
+                .one {
+                    display: none;
+                }
+                .two {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                & div:first-child {
+                    margin-top: 5px;
+                }
+                & div {
+                    display: flex;
+                    margin-top: 10px;
+                    .input {
+                        width: 100%;
+                        margin-left: 10px;
+                    }
+                }
+            }
+        }
+        .file {
+            width: 80%;
+            justify-content: start;
+            background-color: rgb(140, 151, 249);
+            margin-top: 10px;
+            .fileName {
+                display: flex;
+                justify-content: space-between;
+                & div {
+                    display: flex;
+                    & div {
+                        margin-right: 10px;
+                    }
+                }
+            }
+        }
+        .ps {
+            width: 80%;
+            justify-content: start;
+            background-color: rgb(196, 234, 79);
+            margin-top: 10px;
+        }
+        .submit {
+            display: flex;
+            justify-content: center;
+            border: 1px solid red;
+            margin: 30px 0;
+            padding: 5px 10px ;
+        }
+    }
+}
