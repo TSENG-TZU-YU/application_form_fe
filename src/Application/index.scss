@@ -1,4 +1,5 @@
 @import '../../src/styles/global.scss';
+@import '../../src/styles/_variable.scss';
 * {
     padding: 0;
     margin: 0;
@@ -28,22 +29,28 @@
             width: 80%;
             div {
                 margin-top: 10px;
+            
+            }
+            .gap{
+                margin-left: 5px;
+                margin-right: 5px;
             }
             .cycle{
-                margin-left: 6px;
+                // margin-left: 6px;
             }
             .handler {
                 width: 250px;
                 text-align: center;
                 height: 28px;
+                .form-check{
+                    margin-right: 8px;
+                }
             }
             .check {
                 display: flex;
                 margin-top: 0;
             }
-            & .check:nth-child(2) {
-                margin-left: 8px;
-            }
+          
         }
 
         .add {

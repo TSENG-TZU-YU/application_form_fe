@@ -74,7 +74,7 @@ function Application() {
                 <h3>申請表</h3>
                 <div className="vector"></div>
                 <div className="box">
-                    <div>
+                    <div className='gap'>
                         <div>處理人</div>
                         <select name="handler" className="handler" onChange={handleChange}>
                             <option> -----請選擇-----</option>
@@ -84,7 +84,7 @@ function Application() {
                             <option>林祐生</option>
                         </select>
                     </div>
-                    <div>
+                    <div className='gap'>
                         <div>申請類別</div>
                         <select name="category" className="handler" onChange={handleChange}>
                             <option>-----請選擇類別-----</option>
@@ -95,12 +95,12 @@ function Application() {
                     </div>
                 </div>
                 <div className="box">
-                    <div>
+                    <div className='gap'>
                         <div>專案名稱</div>
                         <input name="name" className="handler" type="text" onChange={handleChange} />
                     </div>
                     {/* 週期 */}
-                    <div>
+                    <div className='gap'>
                         <div className='cycle'>該功能使用次數</div>
                         <div className="check handler">
                             <div className="form-check">
