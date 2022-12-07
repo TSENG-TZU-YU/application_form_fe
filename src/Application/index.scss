@@ -29,11 +29,14 @@
             width: 80%;
             div {
                 margin-top: 10px;
-            
             }
             .gap{
                 margin-left: 5px;
                 margin-right: 5px;
+                span{
+                    color: red;
+                    margin-left: 5px;
+                }
             }
             .cycle{
                 // margin-left: 6px;
