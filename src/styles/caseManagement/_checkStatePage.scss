@@ -1,0 +1,66 @@
+@import '../variable';
+
+.checkStateContainer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: $bcgBlock;
+    z-index: 20;
+    @include flexCenter;
+    .close {
+      position: absolute;
+      top: 15%;
+      right: 18%;
+      background: $focusClrG;
+      z-index: 30;
+      color: $mainClrW;
+      padding: 8px 15px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .checkStateContain {
+      position: relative;
+      width: 55%;
+      height: 70%;
+      background: $mainClrW;
+      padding: 20px;
+      overflow: auto;
+      &::-webkit-scrollbar {
+        width: 9px;
+        //   height: 3px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: #807060c0;
+        background-clip: padding-box;
+        border-radius: 3px;
+      }
+  
+      .title {
+        text-align: center;
+        font-size: 24px;
+        font-weight: 600;
+        background: $subClrBrown;
+        color: $mainClrW;
+        padding: 8px;
+      }
+      .checkStateTable {
+        margin: 20px auto;
+        thead,
+        tbody {
+          border-bottom: 1px solid #ccc;
+          text-align: center;
+          th {
+            padding: 10px 30px;
+          }
+          td {
+            padding: 20px 30px;
+            .icons {
+              width: 40px;
+              height: 20px;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    }
+  }
