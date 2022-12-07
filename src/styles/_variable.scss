@@ -1,0 +1,14 @@
+// color
+$mainClrW: #fff;
+$subClrBrown: #817161;
+$focusClrY: #F2AC33;
+$focusClrG: #1F9998;
+$focusClrB: #221E73;
+$bcgBlock: #00000080;
+
+
+@mixin flexCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

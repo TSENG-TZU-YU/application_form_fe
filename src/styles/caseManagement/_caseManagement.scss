@@ -1,0 +1,70 @@
+@import '../variable';
+
+.caseContainer {
+  max-width: 80%;
+  height: 100vh;
+//   background: rgb(231, 190, 151);
+  margin: 0 auto;
+  .sortSelect {
+    // background: lemonchiffon;
+    // max-width: 80%;
+    // margin: 0 auto 20px;
+    padding: 20px 20px 0 20px;
+    display: flex;
+    justify-content: space-between;
+    .bothFilter {
+      display: flex;
+    }
+  }
+  .caseContain {
+    margin: 25px auto 0;
+    thead,
+    tbody {
+      border-bottom: 1px solid #ccc;
+      text-align: center;
+      th {
+        padding: 10px 20px;
+        .arrow {
+          font-size: 2rem;
+          cursor: pointer;
+        }
+      }
+      td {
+        padding: 20px;
+        .icons {
+          width: 40px;
+          height: 20px;
+          cursor: pointer;
+        }
+      }
+      .viewList {
+        cursor: pointer;
+        background: $focusClrY;
+        color: #fff;
+        padding: 8px 10px;
+        border-radius: 3px;
+        transition: .5s;
+      }
+      .posClick {
+        position: relative;
+        .hadClick {
+          position: absolute;
+          padding: 1px 3.5px;
+          z-index: 10;
+          background: #ffc0cbb1;
+          border-radius: 10px;
+          text-align: center;
+          font-size: 12px;
+          font-weight: 600;
+          right: 0;
+          top: 20%;
+        }
+      }
+      .sortBtn {
+        @include flexCenter;
+      }
+    }
+  }
+}
+
+
