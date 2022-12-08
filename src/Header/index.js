@@ -9,11 +9,14 @@ import { RiFileTextLine } from 'react-icons/ri';
 import { RiPhoneFindFill } from 'react-icons/ri';
 import { MdOutlineLogout } from 'react-icons/md';
 
-function Header() {
-  const [application, setApplication] = useState(false);
-  const [caseManagement, setCaseManagement] = useState(true);
-  const [trial, setTrial] = useState(false);
-
+function Header({
+  setApplication,
+  application,
+  caseManagement,
+  setCaseManagement,
+  setTrial,
+  trial,
+}) {
   const app = () => {
     if (caseManagement || trial) {
       setCaseManagement(false);
@@ -26,6 +29,7 @@ function Header() {
       setApplication(false);
       setTrial(false);
     }
+
     setCaseManagement(true);
   };
   const tri = () => {

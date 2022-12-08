@@ -8,7 +8,7 @@ import { IoIosAddCircle } from 'react-icons/io';
 import { IoMdCloseCircle } from 'react-icons/io';
 import axios from 'axios';
 
-function Application() {
+function Application({ setApplication, setCaseManagement, setTrial }) {
   const navigate = useNavigate();
   const [addNeed, setAddNeed] = useState([{ title: '', text: '' }]);
   const [addFile, setAddFile] = useState([{ file: Number(new Date()) }]);
@@ -153,7 +153,10 @@ function Application() {
           icon: 'susses',
           title: '已送出申請',
         }).then(function () {
-          navigate('/');
+          navigate('/header');
+          setCaseManagement(true);
+          setApplication(false);
+          setTrial(false);
         });
 
         let response = await axios.post('http://localhost:3001/api/', {
