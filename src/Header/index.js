@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './index.scss';
 import { Link } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
+import axios from 'axios';
+
+// import { useNavigate } from 'react-router-dom';
 
 //react-icons
 import { HiPencilAlt } from 'react-icons/hi';
@@ -17,11 +20,14 @@ function Header({
   setTrial,
   trial,
 }) {
+  const [auth, setAuth] = useState([]);
+
   const app = () => {
     if (caseManagement || trial) {
       setCaseManagement(false);
       setTrial(false);
     }
+
     setApplication(true);
   };
   const cas = () => {
@@ -29,7 +35,6 @@ function Header({
       setApplication(false);
       setTrial(false);
     }
-
     setCaseManagement(true);
   };
   const tri = () => {
@@ -39,7 +44,18 @@ function Header({
     }
     setTrial(true);
   };
-
+  console.log('auth', auth);
+  useEffect(() => {
+    let auth = async () => {
+      try {
+        let res = await axios.get('http://localhost:3001/api/login/auth');
+        setAuth(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    auth();
+  }, []);
   return (
     <>
       <div className="navTop">
@@ -48,9 +64,15 @@ function Header({
       </div>
       <div className="between">
         <div className="navRight">
-          <div>公司:陽信電子商務</div>
-          <div>姓名:曾子瑜</div>
-          <div>職別:職員</div>
+          {auth.map((v, i) => {
+            return (
+              <div>
+                <div>公司:{v.applicant_unit}</div>
+                <div>姓名:{v.name}</div>
+                <div>職別:{v.job}</div>
+              </div>
+            );
+          })}
 
           {/* 使用者 */}
           <Link to="application">

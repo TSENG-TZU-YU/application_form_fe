@@ -12,9 +12,9 @@ function App() {
   const [application, setApplication] = useState(false);
   const [caseManagement, setCaseManagement] = useState(true);
   const [trial, setTrial] = useState(false);
-  console.log('application', application);
-  console.log('caseManagement', caseManagement);
-  console.log('trial', trial);
+  // console.log('application', application);
+  // console.log('caseManagement', caseManagement);
+  // console.log('trial', trial);
   return (
     <BrowserRouter>
       <Routes>
