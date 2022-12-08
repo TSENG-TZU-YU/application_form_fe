@@ -1,0 +1,76 @@
+@import '../variable';
+
+.caseDetailContainer {
+  position: absolute;
+  width: calc(100vw - 200px);
+  height: calc(100vh - 70px);
+  background: $bcgBlock;
+  z-index: 20;
+  font-size: 12px;
+  @include flexCenter;
+  .caseDetailContain {
+    position: relative;
+    width: 60%;
+    height: 95%;
+    background: $mainClrW;
+    padding: 0 20px;
+    nav {
+      ul {
+        @include flexCenter;
+        border-bottom: 1px solid #ccc;
+        li {
+          background: lemonchiffon;
+          font-size: 16px;
+          font-weight: 600;
+          padding: 8px 15px;
+          margin: 10px 20px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.uploadContainer {
+  background: lightgoldenrodyellow;
+  margin: 0 auto;
+  width: 90%;
+  height: calc(100% - 150px);
+  @include scrollbar;
+  .addIcon {
+    font-size: 1.3rem;
+  }
+  .addUpload {
+    @include flexBetween;
+    .addTitle {
+      font-size: 14px;
+      font-weight: 600;
+      color: $subClrBrown;
+    }
+  }
+  .addUploadContainer {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    .addUploadContain {
+      @include flexBetween;
+      width: 60%;
+      padding: 0 5px;
+      margin-left: 5px;
+      background: #eee;
+      border: 1px solid $subClrBrown;
+    }
+    .delIcon{
+        font-size: .9rem;
+
+    }
+  }
+  .addFile{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    .addIcon{
+        font-size: 1rem;
+    }
+  }
+}

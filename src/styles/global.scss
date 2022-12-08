@@ -12,3 +12,25 @@ $secondary: rgba(10, 10, 10, 0.842);
   background-color: #5e94ce;
   border-color: #b8daff;
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+  font-family: 'Noto Sans TC', sans-serif;
+  scroll-behavior: smooth;
+}
+
+a,
+a:visited,
+a:hover,
+a:active {
+  color: #444;
+  text-decoration: none;
+}
+
+//清除ul樣式
+ul {
+  list-style-type: none;
+}

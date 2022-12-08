@@ -4,6 +4,7 @@ import CategoryFilter from './Component/CategoryFilter.js';
 import StatusFilter from './Component/StatusFilter.js';
 import DateFilter from './Component/DateFilter.js';
 import CheckStatePage from './Component/CheckStatePage.js';
+import CaseDetail from '../CaseDetail/CaseDetail';
 import { FaEye } from 'react-icons/fa';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 
@@ -11,6 +12,7 @@ function CaseManagement() {
   const [number, setNumber] = useState(true);
   const [time, setTime] = useState(true);
   const [checkState, setCheckState] = useState(false);
+  const [caseDetailPage, setCaseDetailPagee] = useState(true);
   const [dateRemind, setDateRemind] = useState('');
   const [maxDateValue, setMaxDateValue] = useState('');
   const [minDateValue, setMinDateValue] = useState('');
@@ -20,6 +22,11 @@ function CaseManagement() {
   return (
     <>
       {checkState ? <CheckStatePage setCheckState={setCheckState} /> : ''}
+      {caseDetailPage ? (
+        <CaseDetail setCaseDetailPagee={setCaseDetailPagee} />
+      ) : (
+        ''
+      )}
 
       <div className="caseContainer">
         {/* 篩選 */}
@@ -84,13 +91,7 @@ function CaseManagement() {
                   />
                 )}
               </th>
-              <th
-                onClick={() => {
-                  setCheckState(true);
-                }}
-              >
-                <span className="viewList">申請狀態</span>
-              </th>
+              <th>申請狀態</th>
               <th></th>
               <th>需求進度</th>
             </tr>
@@ -104,10 +105,21 @@ function CaseManagement() {
               <td>黃聖崴</td>
               <td>現有系統增修</td>
               <td>2022/11/28 13:21</td>
-              <td>案件進行中</td>
+              <td
+                onClick={() => {
+                  setCheckState(true);
+                }}
+              >
+                <span className="viewList">案件進行中</span>
+              </td>
               <td className="posClick">
-                <FaEye className="icons" />
-                <div className="hadClick">NEW</div>
+                <FaEye
+                  className="icons"
+                  onClick={() => {
+                    setCaseDetailPagee(true);
+                  }}
+                />
+                {/* <div className="hadClick">NEW</div> */}
               </td>
               <td>進度(3/4)</td>
             </tr>

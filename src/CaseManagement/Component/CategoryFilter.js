@@ -44,7 +44,7 @@ const customStyles = {
     border: '1px solid #817161',
     // borderRadius: '0px',
     minHeight: '32px',
-    width: '170px',
+    // width: '170px',
     borderColor: state.isFocused ? '#817161' : 'hsl(0, 0%, 80%)',
     boxShadow: 0,
     '&:hover': {

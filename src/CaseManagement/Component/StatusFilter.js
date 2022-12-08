@@ -50,7 +50,7 @@ const customStyles = {
     ...base,
     border: '1px solid #817161',
     minHeight: '32px',
-    width: '150px',
+    // width: '150px',
     borderColor: state.isFocused ? '#817161' : 'hsl(0, 0%, 80%)',
     boxShadow: 0,
     '&:hover': {

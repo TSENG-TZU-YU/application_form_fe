@@ -12,3 +12,21 @@ $bcgBlock: #00000080;
   align-items: center;
   justify-content: center;
 }
+@mixin flexBetween {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin scrollbar {
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 7px;
+    //   height: 3px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #807060c0;
+    background-clip: padding-box;
+    border-radius: 3px;
+  }
+}
