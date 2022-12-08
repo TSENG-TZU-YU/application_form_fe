@@ -1,4 +1,5 @@
 @import '../../src/styles/global.scss';
+@import '../../src/styles/_variable.scss';
 * {
     padding: 0;
     margin: 0;
@@ -7,7 +8,7 @@
 .navTop {
     width: 100%;
     height: 70px;
-    background-color: rgba(129, 113, 97, 1);
+    background-color: $header;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -23,7 +24,7 @@
         width: 200px;
         min-width: 200px;
         height: calc(100vh - 70px);
-        background-color: rgba(192, 158, 130, 0.5);
+        background-color: $navBar;
         display: flex;
         align-items: flex-start;
         justify-content: start;
