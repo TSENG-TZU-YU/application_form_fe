@@ -3,6 +3,9 @@ import Header from './Header';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import LogIn from './LogIn/LogIn.js';
+
+//子頁面
+import Application from './Application';
 import CaseManagement from './CaseManagement/CaseManagement.js';
 
 function App() {
@@ -10,8 +13,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LogIn />} />
-        <Route path="/header" element={<Header />} />
-        <Route path="/caseManagement" element={<CaseManagement />} />
+        <Route path="/header" element={<Header />}>
+          <Route index element={<CaseManagement />} />
+          <Route path="application" element={<Application />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
