@@ -11,6 +11,7 @@ import { AuthProvider } from './utils/use_auth';
 //子頁面
 import Application from './Application';
 import CaseManagement from './CaseManagement/CaseManagement.js';
+import CaseDetail from './CaseDetail/CaseDetail';
 function App() {
   const [application, setApplication] = useState(false);
   const [caseManagement, setCaseManagement] = useState(true);

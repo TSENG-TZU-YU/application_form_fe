@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
+
 import '../styles/caseManagement/_caseManagement.scss';
 import CategoryFilter from './Component/CategoryFilter.js';
 import StatusFilter from './Component/StatusFilter.js';
@@ -12,7 +14,7 @@ function CaseManagement() {
   const [number, setNumber] = useState(true);
   const [time, setTime] = useState(true);
   const [checkState, setCheckState] = useState(false);
-  const [caseDetailPage, setCaseDetailPagee] = useState(true);
+  const [caseDetailPage, setCaseDetailPage] = useState(true);
   const [dateRemind, setDateRemind] = useState('');
   const [maxDateValue, setMaxDateValue] = useState('');
   const [minDateValue, setMinDateValue] = useState('');
@@ -23,7 +25,7 @@ function CaseManagement() {
     <>
       {checkState ? <CheckStatePage setCheckState={setCheckState} /> : ''}
       {caseDetailPage ? (
-        <CaseDetail setCaseDetailPagee={setCaseDetailPagee} />
+        <CaseDetail setCaseDetailPage={setCaseDetailPage} />
       ) : (
         ''
       )}
@@ -116,7 +118,7 @@ function CaseManagement() {
                 <FaEye
                   className="icons"
                   onClick={() => {
-                    setCaseDetailPagee(true);
+                    setCaseDetailPage(true);
                   }}
                 />
                 {/* <div className="hadClick">NEW</div> */}

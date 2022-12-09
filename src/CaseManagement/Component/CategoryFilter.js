@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Select from 'react-select';
 
 const sortOption = [
-  { value: 0, label: '依申請類別排序' },
+  { value: 0, label: '請選擇申請類別' },
   { value: 1, label: '新專案建置' },
   { value: 2, label: '現有系統增修' },
   { value: 3, label: '問題回報' },
