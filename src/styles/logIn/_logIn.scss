@@ -48,7 +48,11 @@
         select {
           cursor: pointer;
           &:focus {
-            color: #000;
+            color: $mainClrW;
+          }
+          option {
+            background-color: #aaa;
+            color: $mainClrW;
           }
         }
         .icons {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
 import '../styles/caseManagement/_caseManagement.scss';
@@ -9,6 +9,7 @@ import CheckStatePage from './Component/CheckStatePage.js';
 import CaseDetail from '../CaseDetail/CaseDetail';
 import { FaEye } from 'react-icons/fa';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
+import axios from 'axios';
 
 function CaseManagement() {
   const [number, setNumber] = useState(true);
@@ -20,6 +21,22 @@ function CaseManagement() {
   const [minDateValue, setMinDateValue] = useState('');
   const [maxDate, setMaxDate] = useState('');
   const [minDate, setMinDate] = useState('');
+
+  const [applicationCheck, setApplicationCheck] = useState([]);
+
+  useEffect(() => {
+    async function getCheck() {
+      try {
+        let res = await axios.get(
+          'http://localhost:3001/api/application_check'
+        );
+        setApplicationCheck(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    getCheck();
+  }, []);
 
   return (
     <>
@@ -99,32 +116,36 @@ function CaseManagement() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>轉件人:林鈺珊</td>
-              <td>NP20221128001</td>
-              <td>金陽信資產管理</td>
-              <td>曾子瑜</td>
-              <td>黃聖崴</td>
-              <td>現有系統增修</td>
-              <td>2022/11/28 13:21</td>
-              <td
-                onClick={() => {
-                  setCheckState(true);
-                }}
-              >
-                <span className="viewList">案件進行中</span>
-              </td>
-              <td className="posClick">
-                <FaEye
-                  className="icons"
-                  onClick={() => {
-                    setCaseDetailPage(true);
-                  }}
-                />
-                {/* <div className="hadClick">NEW</div> */}
-              </td>
-              <td>進度(3/4)</td>
-            </tr>
+            {applicationCheck.map((v, i) => {
+              return (
+                <tr>
+                  <td>轉件人:林鈺珊</td>
+                  <td>{v.case_number}</td>
+                  <td>金陽信資產管理</td>
+                  <td>{v.user}</td>
+                  <td>{v.handler}</td>
+                  <td>{v.application_category}</td>
+                  <td>{v.create_time}</td>
+                  <td
+                    onClick={() => {
+                      setCheckState(true);
+                    }}
+                  >
+                    <span className="viewList">{v.status_id}</span>
+                  </td>
+                  <td className="posClick">
+                    <FaEye
+                      className="icons"
+                      onClick={() => {
+                        setCaseDetailPage(true);
+                      }}
+                    />
+                    {/* <div className="hadClick">NEW</div> */}
+                  </td>
+                  <td>進度(3/4)</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

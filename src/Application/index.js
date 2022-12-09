@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './index.scss';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import moment from 'moment';
 
 //react-icons
 import { IoIosAddCircle } from 'react-icons/io';
@@ -18,7 +19,8 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
   const [submitValue, setSubmitValue] = useState([
     { handler: '', category: '', name: '', cycle: '' },
   ]);
-  console.log('addFile', addFile);
+
+  // console.log('submitValue', submitValue);
 
   //使用者資料
   const { member, setMember, isLogin, setIsLogin } = useAuth();
@@ -157,7 +159,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
         addNeed[0].text !== ''
       ) {
         Swal.fire({
-          icon: 'susses',
+          icon: 'success',
           title: '已送出申請',
         }).then(function () {
           navigate('/header');
@@ -165,14 +167,16 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
           setApplication(false);
           setTrial(false);
         });
-
+        let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
         let response = await axios.post(
           'http://localhost:3001/api/application_post',
           {
             ...submitValue[0],
             need: addNeed,
             number: parseInt(Date.now() / 10000),
-            id: member.id,
+            id: member.name,
+            status: 1,
+            create_time: endTime,
           }
         );
 
@@ -205,7 +209,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
               <option value="0"> -----請選擇-----</option>
               {getHandler.map((v, i) => {
                 return (
-                  <option key={i} value={i + 1}>
+                  <option key={i}>
                     {v.name}
                     {/* <p>(由單位主管分配)</p> */}
                   </option>
@@ -228,11 +232,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
             >
               <option value="0">-----請選擇類別-----</option>
               {getCategory.map((v, i) => {
-                return (
-                  <option key={i} value={i + 1}>
-                    {v.name}
-                  </option>
-                );
+                return <option key={i}>{v.name}</option>;
               })}
             </select>
           </div>
@@ -264,7 +264,6 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
                       className="form-check-input "
                       name="cycle'"
                       type="radio"
-                      value={i + 1}
                       onChange={(e) => {
                         handleChange(e.target.value, 'cycle');
                         if (e.target.value !== '') {

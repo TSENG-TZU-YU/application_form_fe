@@ -3,8 +3,7 @@ import './index.scss';
 import { Link } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import axios from 'axios';
-
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 //react-icons
 import { HiPencilAlt } from 'react-icons/hi';
@@ -23,9 +22,20 @@ function Header({
   setTrial,
   trial,
 }) {
+  const navigate = useNavigate();
+
   //使用者資料
   const { member, setMember } = useAuth();
 
+  //權限
+  const [user, setUser] = useState();
+  // const { director, setDirector } = useAuth();
+  const [handler, setHandler] = useState();
+  // const { associate, setAssociater } = useAuth();
+  console.log('user', user);
+  console.log('handler', handler);
+  console.log('member.id', member);
+  console.log('member.permissions', member.permissions_id);
   //會員登入狀態判斷
   useEffect(() => {
     async function getMember() {
@@ -41,7 +51,30 @@ function Header({
       }
     }
     getMember();
+
+    //TODO:刷新後權限會不見
+    if (member.permissions_id === 1) {
+      setUser(true);
+      setHandler(false);
+    }
+    if (member.permissions_id === 2) {
+      setUser(true);
+      setHandler(true);
+    }
+    if (member.permissions_id === 3 || member.permissions_id === 4) {
+      setHandler(true);
+      setUser(false);
+    }
   }, []);
+
+  const logOut = async () => {
+    try {
+      let res = await axios.get('http://localhost:3001/api/logout');
+      navigate('/');
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const app = () => {
     if (caseManagement || trial) {
@@ -65,12 +98,12 @@ function Header({
     }
     setTrial(true);
   };
-  // member.permissions
+
   return (
     <>
       <div className="navTop">
         <h3>陽信</h3>
-        <MdOutlineLogout size="30" />
+        <MdOutlineLogout size="30" onClick={logOut} />
       </div>
       <div className="between">
         <div className="navRight">
@@ -79,29 +112,44 @@ function Header({
           <div>職別:{member.job}</div>
 
           {/* 使用者/主管 */}
-          <Link to="application">
-            <div className={`bold ${application ? 'link' : ''}`} onClick={app}>
-              <HiPencilAlt size="20" />
-              申請表
-            </div>
-          </Link>
-          <Link
-            className={` ${caseManagement ? 'link' : ''}`}
-            to="/header"
-            onClick={cas}
-          >
-            <div className="bold">
-              <RiFileTextLine size="20" />
-              申請紀錄查詢
-            </div>
-          </Link>
-          <Link to="">
-            {/* 處理人/協理/主管 */}
-            <div className={`bold ${trial ? 'link' : ''}`} onClick={tri}>
-              <RiPhoneFindFill size="20" />
-              案件審理作業
-            </div>
-          </Link>
+          {user ? (
+            <>
+              <Link to="application">
+                <div
+                  className={`bold ${application ? 'link' : ''}`}
+                  onClick={app}
+                >
+                  <HiPencilAlt size="20" />
+                  申請表
+                </div>
+              </Link>
+              <Link
+                className={` ${caseManagement ? 'link' : ''}`}
+                to="/header"
+                onClick={cas}
+              >
+                <div className="bold">
+                  <RiFileTextLine size="20" />
+                  申請紀錄查詢
+                </div>
+              </Link>
+            </>
+          ) : (
+            ''
+          )}
+          {handler ? (
+            <>
+              <Link to="">
+                {/* 處理人/協理/主管 */}
+                <div className={`bold ${trial ? 'link' : ''}`} onClick={tri}>
+                  <RiPhoneFindFill size="20" />
+                  案件審理作業
+                </div>
+              </Link>
+            </>
+          ) : (
+            ''
+          )}
         </div>
 
         <div className="left">
