@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Select from 'react-select';
 
 const sortOption = [
-  { value: 0, label: '依狀態排序' },
+  { value: 0, label: '請選擇狀態' },
   { value: 1, label: '主管待審核' },
   { value: 2, label: '主管審核中' },
   { value: 3, label: '主管退件' },
