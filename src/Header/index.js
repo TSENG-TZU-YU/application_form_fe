@@ -23,9 +23,25 @@ function Header({
   setTrial,
   trial,
 }) {
-  const { member, setMember, isLogin, setIsLogin } = useAuth();
-  const [auth, setAuth] = useState([]);
-  console.log('auth', member);
+  //使用者資料
+  const { member, setMember } = useAuth();
+
+  //會員登入狀態判斷
+  useEffect(() => {
+    async function getMember() {
+      try {
+        // console.log('檢查是否登入');
+        let response = await axios.get(`http://localhost:3001/api/login/auth`, {
+          withCredentials: true,
+        });
+
+        setMember(response.data);
+      } catch (err) {
+        console.log(err.response.data.message);
+      }
+    }
+    getMember();
+  }, []);
 
   const app = () => {
     if (caseManagement || trial) {
@@ -49,19 +65,7 @@ function Header({
     }
     setTrial(true);
   };
-
-  useEffect(() => {
-    // let auth = async () => {
-    //   try {
-    //     let res = await axios.get('http://localhost:3001/api/login/auth');
-    //     setMember(res.data);
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // };
-    // auth();
-    setAuth({ ...member });
-  }, []);
+  // member.permissions
   return (
     <>
       <div className="navTop">
@@ -70,11 +74,11 @@ function Header({
       </div>
       <div className="between">
         <div className="navRight">
-          <div>公司:{auth.applicant_unit}</div>
-          <div>姓名:{auth.name}</div>
-          <div>職別:{auth.job}</div>
+          <div>公司:{member.applicant_unit}</div>
+          <div>姓名:{member.name}</div>
+          <div>職別:{member.job}</div>
 
-          {/* 使用者 */}
+          {/* 使用者/主管 */}
           <Link to="application">
             <div className={`bold ${application ? 'link' : ''}`} onClick={app}>
               <HiPencilAlt size="20" />

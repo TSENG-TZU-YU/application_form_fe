@@ -8,6 +8,9 @@ import { IoIosAddCircle } from 'react-icons/io';
 import { IoMdCloseCircle } from 'react-icons/io';
 import axios from 'axios';
 
+//hook
+import { useAuth } from '../utils/use_auth';
+
 function Application({ setApplication, setCaseManagement, setTrial }) {
   const navigate = useNavigate();
   const [addNeed, setAddNeed] = useState([{ title: '', text: '' }]);
@@ -15,6 +18,10 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
   const [submitValue, setSubmitValue] = useState([
     { handler: '', category: '', name: '', cycle: '' },
   ]);
+  console.log('addFile', addFile);
+
+  //使用者資料
+  const { member, setMember, isLogin, setIsLogin } = useAuth();
 
   //抓取後端資料
   const [getHandler, setGetHandler] = useState([]);
@@ -132,7 +139,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
       if (submitValue[0].name === '') {
         setName(true);
       }
-      if (submitValue[0].cycle === '') {
+      if (submitValue[0].cycle === '0' || submitValue[0].cycle === '') {
         setCycle(true);
       }
       if (addNeed[0].title === '' || addNeed[0].text === '') {
@@ -159,11 +166,15 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
           setTrial(false);
         });
 
-        let response = await axios.post('http://localhost:3001/api/', {
-          ...submitValue[0],
-          need: addNeed,
-          number: parseInt(Date.now() / 10000),
-        });
+        let response = await axios.post(
+          'http://localhost:3001/api/application_post',
+          {
+            ...submitValue[0],
+            need: addNeed,
+            number: parseInt(Date.now() / 10000),
+            id: member.id,
+          }
+        );
 
         console.log(response);
       }
@@ -194,7 +205,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
               <option value="0"> -----請選擇-----</option>
               {getHandler.map((v, i) => {
                 return (
-                  <option key={i}>
+                  <option key={i} value={i + 1}>
                     {v.name}
                     {/* <p>(由單位主管分配)</p> */}
                   </option>
@@ -217,7 +228,11 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
             >
               <option value="0">-----請選擇類別-----</option>
               {getCategory.map((v, i) => {
-                return <option key={i}>{v.name}</option>;
+                return (
+                  <option key={i} value={i + 1}>
+                    {v.name}
+                  </option>
+                );
               })}
             </select>
           </div>
@@ -249,7 +264,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
                       className="form-check-input "
                       name="cycle'"
                       type="radio"
-                      value={i}
+                      value={i + 1}
                       onChange={(e) => {
                         handleChange(e.target.value, 'cycle');
                         if (e.target.value !== '') {
