@@ -5,6 +5,9 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import LogIn from './LogIn/LogIn.js';
 
+// 登入元件
+import { AuthProvider } from './utils/use_auth';
+
 //子頁面
 import Application from './Application';
 import CaseManagement from './CaseManagement/CaseManagement.js';
@@ -17,34 +20,36 @@ function App() {
   // console.log('trial', trial);
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LogIn />} />
-        <Route
-          path="header"
-          element={
-            <Header
-              setApplication={setApplication}
-              application={application}
-              setCaseManagement={setCaseManagement}
-              caseManagement={caseManagement}
-              setTrial={setTrial}
-              trial={trial}
-            />
-          }
-        >
-          <Route index element={<CaseManagement />} />
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<LogIn />} />
           <Route
-            path="application"
+            path="header"
             element={
-              <Application
+              <Header
                 setApplication={setApplication}
+                application={application}
                 setCaseManagement={setCaseManagement}
+                caseManagement={caseManagement}
                 setTrial={setTrial}
+                trial={trial}
               />
             }
-          />
-        </Route>
-      </Routes>
+          >
+            <Route index element={<CaseManagement />} />
+            <Route
+              path="application"
+              element={
+                <Application
+                  setApplication={setApplication}
+                  setCaseManagement={setCaseManagement}
+                  setTrial={setTrial}
+                />
+              }
+            />
+          </Route>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

@@ -244,22 +244,20 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
             <div className="check handler">
               {getCycle.map((v, i) => {
                 return (
-                  <div key={i}>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input "
-                        name="cycle'"
-                        type="radio"
-                        value={i}
-                        onChange={(e) => {
-                          handleChange(e.target.value, 'cycle');
-                          if (e.target.value !== '') {
-                            setCycle(false);
-                          }
-                        }}
-                      />
-                      <label className="form-check-label">{v.name}</label>
-                    </div>
+                  <div key={i} className="form-check">
+                    <input
+                      className="form-check-input "
+                      name="cycle'"
+                      type="radio"
+                      value={i}
+                      onChange={(e) => {
+                        handleChange(e.target.value, 'cycle');
+                        if (e.target.value !== '') {
+                          setCycle(false);
+                        }
+                      }}
+                    />
+                    <label className="form-check-label">{v.name}</label>
                   </div>
                 );
               })}

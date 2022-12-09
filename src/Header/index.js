@@ -12,6 +12,9 @@ import { RiFileTextLine } from 'react-icons/ri';
 import { RiPhoneFindFill } from 'react-icons/ri';
 import { MdOutlineLogout } from 'react-icons/md';
 
+//hook
+import { useAuth } from '../utils/use_auth';
+
 function Header({
   setApplication,
   application,
@@ -20,7 +23,9 @@ function Header({
   setTrial,
   trial,
 }) {
+  const { member, setMember, isLogin, setIsLogin } = useAuth();
   const [auth, setAuth] = useState([]);
+  console.log('auth', member);
 
   const app = () => {
     if (caseManagement || trial) {
@@ -44,17 +49,18 @@ function Header({
     }
     setTrial(true);
   };
-  console.log('auth', auth);
+
   useEffect(() => {
-    let auth = async () => {
-      try {
-        let res = await axios.get('http://localhost:3001/api/login/auth');
-        setAuth(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    auth();
+    // let auth = async () => {
+    //   try {
+    //     let res = await axios.get('http://localhost:3001/api/login/auth');
+    //     setMember(res.data);
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // };
+    // auth();
+    setAuth({ ...member });
   }, []);
   return (
     <>
@@ -64,15 +70,9 @@ function Header({
       </div>
       <div className="between">
         <div className="navRight">
-          {auth.map((v, i) => {
-            return (
-              <div>
-                <div>公司:{v.applicant_unit}</div>
-                <div>姓名:{v.name}</div>
-                <div>職別:{v.job}</div>
-              </div>
-            );
-          })}
+          <div>公司:{auth.applicant_unit}</div>
+          <div>姓名:{auth.name}</div>
+          <div>職別:{auth.job}</div>
 
           {/* 使用者 */}
           <Link to="application">

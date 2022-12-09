@@ -7,22 +7,26 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
+//hook
+import { useAuth } from '../utils/use_auth';
+
 function LogIn() {
   const navigate = useNavigate();
   const [login, setIogin] = useState([]);
- 
+  const { member, setMember, isLogin, setIsLogin } = useAuth();
+
   // const [check, setCheck] = useState([]);
 
   const doLogin = (e) => {
     setIogin({ ...login, [e.target.name]: e.target.value });
   };
 
-
   const submit = async () => {
     try {
       let res = await axios.post('http://localhost:3001/api/login', login);
       navigate('/header');
-      console.log(res);
+      setMember(res.data);
+      console.log(res.data);
     } catch (err) {
       console.log(err);
       Swal.fire({
