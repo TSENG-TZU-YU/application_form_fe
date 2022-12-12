@@ -52,13 +52,22 @@ function App() {
                 />
               }
             />
+            <Route path="caseDetail" element={<CaseDetail />}>
+              <Route index
+              //  path="appForm"
+               element={<ApplicationForm />} />
+              <Route path="caseDetail/chatPage" element={<ChatPage />} />
+              <Route path="caseDetail/uploadPage" element={<UploadPage />} />
+            </Route>
           </Route>
+
+          {/* <Route path="/caseManagement" element={<CaseManagement />} />
 
           <Route path="/caseDetail/" element={<CaseDetail />}>
             <Route path="/caseDetail/appForm" element={<ApplicationForm />} />
             <Route path="/caseDetail/chatPage" element={<ChatPage />} />
             <Route path="/caseDetail/uploadPage" element={<UploadPage />} />
-          </Route>
+          </Route> */}
         </Routes>
       </AuthProvider>
     </BrowserRouter>

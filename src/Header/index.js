@@ -105,7 +105,7 @@ function Header({
         <div className="left">
           {/* <Application /> */}
           {/* <CaseManagement /> */}
-          {children}
+          {/* {children} */}
           <Outlet />
         </div>
       </div>
