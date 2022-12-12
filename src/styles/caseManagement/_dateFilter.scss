@@ -1,12 +1,11 @@
 @import '../variable';
 .dateFilterContainer {
-  height: 60px;
+  // height: 60px;
 
   .dateFilter {
     display: flex;
     align-items: center;
     input {
-      // max-width: 130px;
       &::-webkit-calendar-picker-indicator {
         width: 18px;
         height: 18px;
@@ -29,6 +28,7 @@
     }
   }
   .dateRemind{
+    position: absolute;
     color: $focusClrG;
     font-weight: 600;
     padding-top: 5px;

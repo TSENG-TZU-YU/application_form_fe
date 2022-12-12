@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Children } from 'react';
 import './index.scss';
 
 //react-icons
@@ -11,7 +11,7 @@ import { MdOutlineLogout } from 'react-icons/md';
 import Application from '../Application';
 import CaseManagement from '../CaseManagement/CaseManagement';
 
-function Header() {
+function Header({ children }) {
   return (
     <>
       <div className="navTop">
@@ -42,7 +42,8 @@ function Header() {
         </div>
         <div className="left">
           {/* <Application /> */}
-          <CaseManagement />
+          {/* <CaseManagement /> */}
+          {children}
         </div>
       </div>
     </>

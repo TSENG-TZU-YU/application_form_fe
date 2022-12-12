@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Select from 'react-select';
 
 const sortOption = [
-  { value: 0, label: '請選擇申請類別' },
+  { value: '', label: '----請選擇申請類別----' },
   { value: 1, label: '新專案建置' },
   { value: 2, label: '現有系統增修' },
   { value: 3, label: '問題回報' },
@@ -14,7 +14,7 @@ const customStyles = {
   option: (provided, state) => ({
     ...provided,
     height: '32px',
-    // width: '132px',
+    // width: '170px',
     color: state.isSelected ? '#fff' : '#444',
     background: state.isSelected ? '#817161' : '#fff',
     ':active': {
@@ -44,7 +44,7 @@ const customStyles = {
     border: '1px solid #817161',
     // borderRadius: '0px',
     minHeight: '32px',
-    // width: '170px',
+    width: '170px',
     borderColor: state.isFocused ? '#817161' : 'hsl(0, 0%, 80%)',
     boxShadow: 0,
     '&:hover': {

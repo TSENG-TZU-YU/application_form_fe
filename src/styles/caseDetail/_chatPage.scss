@@ -2,7 +2,7 @@
 
 .userName {
     //   background: lightblue;
-      width: 90%;
+      width: 100%;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -18,8 +18,8 @@
     .chatContainer {
     //   background: lightgoldenrodyellow;
       margin: 0 auto;
-      width: 90%;
-      height: calc(100% - 150px);
+      width: 100%;
+      height: calc(100% - 160px);
       padding: 0 5px;
       @include scrollbar;
       .leftMsgContain,
@@ -49,13 +49,14 @@
     }
     
     .chatBarContain {
-      width: 90%;
-      margin: 3px auto;
+      // width: 90%;
+      margin: 8px auto 0;
       @include flexCenter;
       .submitMsg {
         resize: none;
         border: 1.5px solid $subClrBrown;
         border-radius: 3px;
+        width: 100%;
         &::-webkit-scrollbar {
           width: 5px;
         }

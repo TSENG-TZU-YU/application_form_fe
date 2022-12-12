@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { MdOutlineAddBox } from 'react-icons/md';
 import { HiOutlineDocumentPlus } from 'react-icons/hi2';
@@ -7,17 +7,42 @@ import { AiFillCloseCircle } from 'react-icons/ai';
 
 import '../../styles/caseDetail/_uploadPage.scss';
 
-function UploadPage({
-  handleClearFile,
-  handleAddFile,
-  filesData,
-  handleDelFile,
-  handlerUpdateFile,
-  userFilesPage,
-  setUserFilesPage,
-  setMgtUserFilesPage,
-  mgtFilesPage,
-}) {
+function UploadPage() {
+  const [userFilesPage, setUserFilesPage] = useState(true);
+  const [mgtFilesPage, setMgtUserFilesPage] = useState(false);
+  const [filesData, setFilesData] = useState([{ fileName: '' }]);
+
+  //   files upload
+  //   update contain
+  const handlerUpdateFile = (e, i) => {
+    let name = e.target.files[0].name;
+    let newData = [...filesData];
+    filesData[i].fileName = name;
+    setFilesData(newData);
+    // console.log(e.target.files[0].name);
+    // console.log(i);
+  };
+
+  // add files
+  const handleAddFile = () => {
+    let newData = [...filesData, { fileName: '' }];
+    setFilesData(newData);
+  };
+
+  // clear files
+  const handleClearFile = () => {
+    let newData = [{ fileName: '' }];
+    setFilesData(newData);
+  };
+
+  // del files
+  const handleDelFile = (i) => {
+    if (filesData.length === 1) return;
+    let newData = [...filesData];
+    newData.splice(i, 1);
+    setFilesData(newData);
+    // console.log(i);
+  };
   return (
     <div className="overScr">
       {/* 上傳檔案 */}
@@ -168,7 +193,7 @@ function UploadPage({
         {/* 管理者 */}
         {userFilesPage === true && mgtFilesPage === false ? (
           <div className="viewFilesContain">
-            <div className="pb-3">
+            <div className="pt-2">
               <span className="filesTime">
                 2022/12/12 13:14 (處理人接收時間 : 2022/12/13 12:12)
               </span>
@@ -183,7 +208,7 @@ function UploadPage({
                 <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
               </div>
             </div>
-            <div className="pb-3">
+            <div className="pt-2">
               <span className="filesTime">
                 2022/12/12 13:14 (處理人接收時間 : 2022/12/13 12:12)
               </span>
@@ -198,7 +223,22 @@ function UploadPage({
                 <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
               </div>
             </div>
-            <div className="pb-3">
+            <div className="pt-2">
+              <span className="filesTime">
+                2022/12/12 13:14 (處理人接收時間 : 2022/12/13 12:12)
+              </span>
+              <div className="pt-2">
+                <span>1.</span>
+                <span className="ms-1 me-2">NPB-11111291330-001</span>
+                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+              </div>
+              <div className="pt-2">
+                <span>1.</span>
+                <span className="ms-1 me-2">NPB-11111291330-001</span>
+                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+              </div>
+            </div>
+            <div className="pt-2">
               <span className="filesTime">
                 2022/12/12 13:14 (處理人接收時間 : 2022/12/13 12:12)
               </span>
@@ -216,7 +256,7 @@ function UploadPage({
           </div>
         ) : (
           <div className="viewFilesContain">
-            <div className="pb-3">
+            <div className="pt-2">
               <span className="filesTime">2022/12/12 13:14</span>
               <div className="pt-2">
                 <span>1.</span>
@@ -229,7 +269,7 @@ function UploadPage({
                 <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
               </div>
             </div>
-            <div className="pb-3">
+            <div className="pt-2">
               <span className="filesTime">2022/12/12 13:14</span>
               <div className="pt-2">
                 <span>1.</span>
@@ -242,7 +282,20 @@ function UploadPage({
                 <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
               </div>
             </div>
-            <div className="pb-3">
+            <div className="pt-2">
+              <span className="filesTime">2022/12/12 13:14</span>
+              <div className="pt-2">
+                <span>1.</span>
+                <span className="ms-1 me-2">NPB-11111291330-001</span>
+                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+              </div>
+              <div className="pt-2">
+                <span>1.</span>
+                <span className="ms-1 me-2">NPB-11111291330-001</span>
+                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+              </div>
+            </div>
+            <div className="pt-2">
               <span className="filesTime">2022/12/12 13:14</span>
               <div className="pt-2">
                 <span>1.</span>
