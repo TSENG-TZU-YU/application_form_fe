@@ -10,13 +10,12 @@ import Header from '../Header';
 function CaseDetail() {
   const navBtn = [
     { title: '申請表', url: '/header/caseDetail' },
-    { title: '討論區', url: '/header/caseDetail/caseDetail/chatPage' },
-    { title: '上傳文件', url: '/header/caseDetail/caseDetail/uploadPage' },
+    { title: '討論區', url: '/header/caseDetail/chatPage' },
+    { title: '上傳文件', url: '/header/caseDetail/uploadPage' },
   ];
   return (
-    // <Header>
     <div className="caseDetailContainer">
-      <Link to="/caseManagement" className="prePage">
+      <Link to="/header" className="prePage">
         <FaArrowLeft className="preIcon" /> <span>返回列表頁</span>
       </Link>
 
@@ -41,7 +40,6 @@ function CaseDetail() {
         <Outlet />
       </div>
     </div>
-    // </Header>
   );
 }
 
