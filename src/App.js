@@ -14,7 +14,7 @@ import CaseManagement from './CaseManagement/CaseManagement.js';
 import CaseDetail from './CaseDetail/CaseDetail';
 function App() {
   const [application, setApplication] = useState(false);
-  const [caseManagement, setCaseManagement] = useState(true);
+  const [caseManagement, setCaseManagement] = useState(false);
   const [trial, setTrial] = useState(false);
   // console.log('application', application);
   // console.log('caseManagement', caseManagement);

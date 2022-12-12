@@ -175,6 +175,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
             need: addNeed,
             number: parseInt(Date.now() / 10000),
             id: member.name,
+            // TODO: 申請狀態 一般職員跟主管送出的狀態不同
             status: 1,
             create_time: endTime,
           }

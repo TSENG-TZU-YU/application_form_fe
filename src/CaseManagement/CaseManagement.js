@@ -118,7 +118,7 @@ function CaseManagement() {
           <tbody>
             {applicationCheck.map((v, i) => {
               return (
-                <tr>
+                <tr key={i}>
                   <td>轉件人:林鈺珊</td>
                   <td>{v.case_number}</td>
                   <td>金陽信資產管理</td>
@@ -131,7 +131,7 @@ function CaseManagement() {
                       setCheckState(true);
                     }}
                   >
-                    <span className="viewList">{v.status_id}</span>
+                    <span className="viewList">{v.name}</span>
                   </td>
                   <td className="posClick">
                     <FaEye

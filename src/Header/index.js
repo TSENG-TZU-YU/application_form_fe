@@ -32,10 +32,7 @@ function Header({
   // const { director, setDirector } = useAuth();
   const [handler, setHandler] = useState();
   // const { associate, setAssociater } = useAuth();
-  console.log('user', user);
-  console.log('handler', handler);
-  console.log('member.id', member);
-  console.log('member.permissions', member.permissions_id);
+
   //會員登入狀態判斷
   useEffect(() => {
     async function getMember() {
@@ -52,7 +49,6 @@ function Header({
     }
     getMember();
 
-    //TODO:刷新後權限會不見
     if (member.permissions_id === 1) {
       setUser(true);
       setHandler(false);
@@ -65,7 +61,8 @@ function Header({
       setHandler(true);
       setUser(false);
     }
-  }, []);
+    //刷新後會員權限無法渲染 需要增加member.permissions_id?
+  }, [member.permissions_id]);
 
   const logOut = async () => {
     try {
