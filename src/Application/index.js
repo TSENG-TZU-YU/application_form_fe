@@ -8,7 +8,7 @@ import { IoIosAddCircle } from 'react-icons/io';
 import { IoMdCloseCircle } from 'react-icons/io';
 import axios from 'axios';
 
-function Application() {
+function Application({ setApplication, setCaseManagement, setTrial }) {
   const navigate = useNavigate();
   const [addNeed, setAddNeed] = useState([{ title: '', text: '' }]);
   const [addFile, setAddFile] = useState([{ file: Number(new Date()) }]);
@@ -153,7 +153,10 @@ function Application() {
           icon: 'susses',
           title: '已送出申請',
         }).then(function () {
-          navigate('/');
+          navigate('/header');
+          setCaseManagement(true);
+          setApplication(false);
+          setTrial(false);
         });
 
         let response = await axios.post('http://localhost:3001/api/', {
@@ -214,7 +217,7 @@ function Application() {
             >
               <option value="0">-----請選擇類別-----</option>
               {getCategory.map((v, i) => {
-                return <option>{v.name}</option>;
+                return <option key={i}>{v.name}</option>;
               })}
             </select>
           </div>
@@ -241,23 +244,21 @@ function Application() {
             <div className="check handler">
               {getCycle.map((v, i) => {
                 return (
-                  <>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input "
-                        name="cycle'"
-                        type="radio"
-                        value={i}
-                        onChange={(e) => {
-                          handleChange(e.target.value, 'cycle');
-                          if (e.target.value !== '') {
-                            setCycle(false);
-                          }
-                        }}
-                      />
-                      <label className="form-check-label">{v.name}</label>
-                    </div>
-                  </>
+                  <div key={i} className="form-check">
+                    <input
+                      className="form-check-input "
+                      name="cycle'"
+                      type="radio"
+                      value={i}
+                      onChange={(e) => {
+                        handleChange(e.target.value, 'cycle');
+                        if (e.target.value !== '') {
+                          setCycle(false);
+                        }
+                      }}
+                    />
+                    <label className="form-check-label">{v.name}</label>
+                  </div>
                 );
               })}
             </div>
@@ -329,7 +330,6 @@ function Application() {
               <div>副檔名</div>
               <div>(選擇新專案必須上傳RFP 文件)</div>
             </div>
-
             <IoIosAddCircle size="20" onClick={addF} />
           </div>
           {addFile.map((v, i) => {
