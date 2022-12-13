@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { MdOutlineAddBox } from 'react-icons/md';
 import { HiOutlineDocumentPlus } from 'react-icons/hi2';
@@ -6,11 +7,32 @@ import { FaTrashAlt } from 'react-icons/fa';
 import { AiFillCloseCircle } from 'react-icons/ai';
 
 import '../../styles/caseDetail/_uploadPage.scss';
+import { useAuth } from '../../utils/use_auth';
 
-function UploadPage() {
+function UploadPage({ setAddStatus, addStatus, caseNum }) {
   const [userFilesPage, setUserFilesPage] = useState(true);
   const [mgtFilesPage, setMgtUserFilesPage] = useState(false);
   const [filesData, setFilesData] = useState([{ fileName: '' }]);
+  const { member, setMember } = useAuth();
+  useEffect(() => {
+    async function getMember() {
+      try {
+        // console.log('檢查是否登入');
+        let response = await axios.get(`http://localhost:3001/api/login/auth`, {
+          withCredentials: true,
+        });
+        // console.log(response.data);
+        setMember(response.data);
+      } catch (err) {
+        console.log(err.response.data.message);
+      }
+    }
+    getMember();
+
+    if (member.permissions_id === 1) {
+      setAddStatus(false);
+    }
+  }, []);
 
   //   files upload
   //   update contain
@@ -107,60 +129,61 @@ function UploadPage() {
       </>
 
       {/* 管理者接收檔案 */}
-      <div className="receiveFileContainer">
-        <div
-          className="receiveFileTime
-  "
-        >
-          2022/12/12 13:21 已上傳文件:
-        </div>
-        <textarea
-          name=""
-          className="textContain"
-          //   cols="87"
-          rows="30"
-        ></textarea>
-        <div className="files">
-          <div className="receiveFile">
-            <span>1.</span>
-            <span className="ms-1 me-2">NPB-11111291330-001</span>
-            <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+      {addStatus ? (
+        <>
+          <div className="receiveFileContainer">
+            <div className="receiveFileTime">2022/12/12 13:21 已上傳文件:</div>
+            <textarea
+              name=""
+              className="textContain"
+              //   cols="87"
+              rows="30"
+            ></textarea>
+            <div className="files">
+              <div className="receiveFile">
+                <span>1.</span>
+                <span className="ms-1 me-2">NPB-11111291330-001</span>
+                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+              </div>
+              <div className="receiveFile">
+                <span>1.</span>
+                <span className="ms-1 me-2">NPB-11111291330-001</span>
+                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+              </div>
+              <div className="receiveFile">
+                <span>1.</span>
+                <span className="ms-1 me-2">NPB-11111291330-001</span>
+                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+              </div>
+              <div className="receiveFile">
+                <span>1.</span>
+                <span className="ms-1 me-2">NPB-11111291330-001</span>
+                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+              </div>
+              <div className="receiveFile">
+                <span>1.</span>
+                <span className="ms-1 me-2">NPB-11111291330-001</span>
+                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+              </div>
+              <div className="receiveFile">
+                <span>1.</span>
+                <span className="ms-1 me-2">NPB-11111291330-001</span>
+                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+              </div>
+              <div className="receiveFile">
+                <span>1.</span>
+                <span className="ms-1 me-2">NPB-11111291330-001</span>
+                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+              </div>
+            </div>
           </div>
-          <div className="receiveFile">
-            <span>1.</span>
-            <span className="ms-1 me-2">NPB-11111291330-001</span>
-            <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+          <div className="subBtn receiveBtn">
+            <button className="submitBtn">接收檔案</button>
           </div>
-          <div className="receiveFile">
-            <span>1.</span>
-            <span className="ms-1 me-2">NPB-11111291330-001</span>
-            <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-          </div>
-          <div className="receiveFile">
-            <span>1.</span>
-            <span className="ms-1 me-2">NPB-11111291330-001</span>
-            <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-          </div>
-          <div className="receiveFile">
-            <span>1.</span>
-            <span className="ms-1 me-2">NPB-11111291330-001</span>
-            <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-          </div>
-          <div className="receiveFile">
-            <span>1.</span>
-            <span className="ms-1 me-2">NPB-11111291330-001</span>
-            <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-          </div>
-          <div className="receiveFile">
-            <span>1.</span>
-            <span className="ms-1 me-2">NPB-11111291330-001</span>
-            <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-          </div>
-        </div>
-      </div>
-      <div className="subBtn receiveBtn">
-        <button className="submitBtn">接收檔案</button>
-      </div>
+        </>
+      ) : (
+        ''
+      )}
 
       {/* 雙方檔案 */}
       <div className="viewFilesContainer">

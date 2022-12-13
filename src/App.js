@@ -1,5 +1,7 @@
 import './App.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { API_URL } from './utils/config';
+import axios from 'axios';
 import Header from './Header';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -20,9 +22,13 @@ function App() {
   const [application, setApplication] = useState(false);
   const [caseManagement, setCaseManagement] = useState(false);
   const [trial, setTrial] = useState(false);
+  const [addStatus, setAddStatus] = useState(false);
+  const [caseNum, setCaseNum] = useState('');
+
   // console.log('application', application);
   // console.log('caseManagement', caseManagement);
   // console.log('trial', trial);
+
   return (
     <BrowserRouter>
       <AuthProvider>
@@ -41,7 +47,7 @@ function App() {
               />
             }
           >
-            <Route index element={<CaseManagement />} />
+            <Route index element={<CaseManagement setCaseNum={setCaseNum} />} />
             <Route
               path="application"
               element={
@@ -52,10 +58,30 @@ function App() {
                 />
               }
             />
-            <Route path="caseDetail" element={<CaseDetail />}>
-              <Route index element={<ApplicationForm />} />
-              <Route path="chatPage" element={<ChatPage />} />
-              <Route path="uploadPage" element={<UploadPage />} />
+            {/* detail */}
+            <Route path="caseDetail" element={<CaseDetail caseNum={caseNum} />}>
+              <Route
+                // index
+                path="application/:num"
+                element={
+                  <ApplicationForm
+                    setAddStatus={setAddStatus}
+                    addStatus={addStatus}
+                    caseNum={caseNum}
+                  />
+                }
+              />
+              <Route path="chatPage/:num" element={<ChatPage />} />
+              <Route
+                path="uploadPage/:num"
+                element={
+                  <UploadPage
+                    setAddStatus={setAddStatus}
+                    addStatus={addStatus}
+                    caseNum={caseNum}
+                  />
+                }
+              />
             </Route>
           </Route>
         </Routes>
