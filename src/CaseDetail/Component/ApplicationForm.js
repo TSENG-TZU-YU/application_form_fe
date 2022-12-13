@@ -1,14 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../../utils/use_auth';
+import { API_URL } from '../../utils/config';
+
 import '../../styles/caseDetail/_applicationForm.scss';
 import EditNeedPage from './EditNeedPage';
 import AddStateForm from './AddStateForm';
 
-function ApplicationForm() {
+function ApplicationForm({ setAddStatus, addStatus }) {
   const [editPage, setEditPage] = useState(false);
   const [addStateForm, setAddStateForm] = useState(false);
+  const { member, setMember } = useAuth();
+  const { num } = useParams();
+  const [needData, setNeedData] = useState([]);
+  const [detailData, setDetailData] = useState([]);
 
   const [editNeed, setEditNeed] = useState([{ title: '', directions: '' }]);
+
+  const radioInput = [
+    { title: '一次性', value: '1' },
+    { title: '短期', value: '2' },
+    { title: '長期', value: '3' },
+  ];
+
+  // 檢查會員
+  useEffect(() => {
+    async function getMember() {
+      try {
+        // console.log('檢查是否登入');
+        let response = await axios.get(`http://localhost:3001/api/login/auth`, {
+          withCredentials: true,
+        });
+        // console.log(response.data);
+        setMember(response.data);
+      } catch (err) {
+        console.log(err.response.data.message);
+      }
+    }
+    getMember();
+
+    if (member.permissions_id === 1) {
+      setAddStatus(false);
+    }
+  }, []);
+
+  // 取得detail Id 的值
+  useEffect(() => {
+    let getCampingDetailData = async () => {
+      let response = await axios.get(`${API_URL}/applicationData/${num}`);
+      setDetailData(response.data.result);
+      setNeedData(response.data.needResult);
+      // console.log(response.data.result);
+      // console.log(response.data.needResult);
+    };
+
+    getCampingDetailData();
+  }, [num]);
 
   //   需求修改表單
   // add need
@@ -32,8 +81,6 @@ function ApplicationForm() {
     if (input === 'dir') newData[i].directions = val;
     setEditNeed(newData);
   };
-
-  
 
   return (
     <div className="appFormContainer">
@@ -117,59 +164,81 @@ function ApplicationForm() {
 
       {/* 申請表單 */}
       <div className="tableContainer">
-        <div>
-          <div className="pb-1">案件編號</div>
-          <input type="text" placeholder="NPB-20221128001" disabled />
-        </div>
-        <div className="gapContain my-2">
-          <div>
-            <div className="pb-1">處理人</div>
-            <input type="text" placeholder="林鈺珊" disabled />
-          </div>
-          <div>
-            <div className="pb-1">申請類別</div>
-            <input type="text" placeholder="現有系統增修" disabled />
-          </div>
-        </div>
-        <div className="gapContain">
-          <div>
-            <div className="pb-1">系統名稱</div>
-            <input type="text" placeholder="現有系統增修" disabled />
-          </div>
-          <div>
-            <div className="pb-1">該功能使用次數</div>
-            <div className="d-flex align-items-center">
-              <input type="radio" disabled checked />
-              <label>一次性</label>
-              <input className="ms-2" type="radio" disabled />
-              <label className="me-2">短期</label>
-              <input type="radio" disabled />
-              <label>長期</label>
+        {detailData.map((v) => {
+          return (
+            <div key={uuidv4()}>
+              <div>
+                <div className="pb-1">案件編號</div>
+                <input type="text" placeholder={v.case_number} disabled />
+              </div>
+              <div className="gapContain my-2">
+                <div>
+                  <div className="pb-1">處理人</div>
+                  <input type="text" placeholder={v.user} disabled />
+                </div>
+                <div>
+                  <div className="pb-1">申請類別</div>
+                  <input
+                    type="text"
+                    placeholder={v.application_category}
+                    disabled
+                  />
+                </div>
+              </div>
+              <div className="gapContain">
+                <div>
+                  <div className="pb-1">專案名稱</div>
+                  <input type="text" placeholder={v.project_name} disabled />
+                </div>
+                <div>
+                  <div className="pb-1">該功能使用次數</div>
+                  <div className="d-flex align-items-center">
+                    {radioInput.map((d) => {
+                      return (
+                        <div
+                          className="d-flex align-items-center"
+                          key={uuidv4()}
+                        >
+                          <input
+                            type="radio"
+                            disabled
+                            checked={v.cycle === d.value ? true : false}
+                          />
+                          <label>{d.title}</label>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          );
+        })}
 
         {/* 需求 */}
-        <div className="needContain">
-          <div className="d-flex">
-            <input type="checkbox" />
-            <span className="title">需求 1</span>
-          </div>
-          <div className="needInput center">
-            <span className="pe-1">1.</span>
-            <input type="text" placeholder="增加新功能" disabled />
-          </div>
-          <div className="needInput">
-            <span className="pe-1">2.</span>
-            <textarea
-              name=""
-              // cols="30"
-              rows="3"
-              placeholder="請依標題詳細說明"
-              disabled
-            ></textarea>
-          </div>
-        </div>
+        {needData.map((v, i) => {
+          return (
+            <div className="needContain" key={uuidv4()}>
+              <div className="d-flex">
+                <input type="checkbox" disabled={addStatus ? false : true} />
+                <span className="title">需求 {i}</span>
+              </div>
+              <div className="needInput center">
+                <span className="pe-1">1.</span>
+                <input type="text" placeholder={v.requirement_name} disabled />
+              </div>
+              <div className="needInput">
+                <span className="pe-1">2.</span>
+                <textarea
+                  name=""
+                  rows="3"
+                  placeholder={v.directions}
+                  disabled
+                ></textarea>
+              </div>
+            </div>
+          );
+        })}
 
         {/* 檔案 */}
         <div className="needFile">
@@ -178,23 +247,27 @@ function ApplicationForm() {
         </div>
 
         {/* 選擇狀態 */}
-        <div className="selectContain">
-          <select name="">
-            <option value="0" selected>
-              --請選擇申請狀態--
-            </option>
-            <option value="1">同意申請</option>
-          </select>
-          <button
-            className="confirmBtn"
-            onClick={() => {
-              setAddStateForm(true);
-            }}
-          >
-            確認
-          </button>
-          <button className="finishBtn">完成</button>
-        </div>
+        {addStatus ? (
+          <div className="selectContain">
+            <select name="">
+              <option value="0" selected>
+                --請選擇申請狀態--
+              </option>
+              <option value="1">同意申請</option>
+            </select>
+            <button
+              className="confirmBtn"
+              onClick={() => {
+                setAddStateForm(true);
+              }}
+            >
+              確認
+            </button>
+            <button className="finishBtn">完成</button>
+          </div>
+        ) : (
+          ''
+        )}
       </div>
     </div>
   );

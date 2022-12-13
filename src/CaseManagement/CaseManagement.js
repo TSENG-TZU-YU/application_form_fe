@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom';
 import { API_URL } from '../utils/config';
 import axios from 'axios';
+import { useAuth } from '../utils/use_auth';
 
 import '../styles/caseManagement/_caseManagement.scss';
 import CategoryFilter from './Component/CategoryFilter.js';
@@ -13,7 +14,8 @@ import CheckStatePage from './Component/CheckStatePage.js';
 import { FaEye } from 'react-icons/fa';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 
-function CaseManagement() {
+function CaseManagement({ caseNum, setCaseNum }) {
+  const { member, setMember } = useAuth();
   const [number, setNumber] = useState(true);
   const [time, setTime] = useState(true);
   const [checkState, setCheckState] = useState(false);
@@ -22,31 +24,35 @@ function CaseManagement() {
   const [minDateValue, setMinDateValue] = useState('');
   const [maxDate, setMaxDate] = useState('');
   const [minDate, setMinDate] = useState('');
+  const [memberId, srtMemberId] = useState('');
   const [allData, setAllData] = useState([]);
+
+  // 檢查會員
+  useEffect(() => {
+    async function getMember() {
+      try {
+        // console.log('檢查是否登入');
+        let response = await axios.get(`http://localhost:3001/api/login/auth`, {
+          withCredentials: true,
+        });
+        // console.log(response.data);
+        setMember(response.data);
+      } catch (err) {
+        console.log(err.response.data.message);
+      }
+    }
+    getMember();
+  }, []);
 
   // 取得所有資料
   useEffect(() => {
     let getCampingData = async () => {
-      let response = await axios.get(`${API_URL}/applicationData`);
+      let response = await axios.get(`${API_URL}/applicationData`, {
+        withCredentials: true,
+      });
       setAllData(response.data.result);
     };
     getCampingData();
-  }, []);
-
-  const [applicationCheck, setApplicationCheck] = useState([]);
-
-  useEffect(() => {
-    async function getCheck() {
-      try {
-        let res = await axios.get(
-          'http://localhost:3001/api/application_check'
-        );
-        setApplicationCheck(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    getCheck();
   }, []);
 
   return (
@@ -142,8 +148,13 @@ function CaseManagement() {
                     <span className="viewList">{v.name}</span>
                   </td>
                   <td className="posClick">
-                    <Link to={`caseDetail/${v.case_number}`}>
-                      <FaEye className="icons" />
+                    <Link to={`caseDetail/application/${v.case_number}`}>
+                      <FaEye
+                        className="icons"
+                        onClick={() => {
+                          setCaseNum(v.case_number);
+                        }}
+                      />
                     </Link>
 
                     {/* <div className="hadClick">NEW</div> */}
