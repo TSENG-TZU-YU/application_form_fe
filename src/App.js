@@ -1,5 +1,7 @@
 import './App.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { API_URL } from './utils/config';
+import axios from 'axios';
 import Header from './Header';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -20,9 +22,11 @@ function App() {
   const [application, setApplication] = useState(false);
   const [caseManagement, setCaseManagement] = useState(true);
   const [trial, setTrial] = useState(false);
+
   // console.log('application', application);
   // console.log('caseManagement', caseManagement);
   // console.log('trial', trial);
+
   return (
     <BrowserRouter>
       <AuthProvider>
@@ -52,7 +56,7 @@ function App() {
                 />
               }
             />
-            <Route path="caseDetail" element={<CaseDetail />}>
+            <Route path="caseDetail/:num" element={<CaseDetail />}>
               <Route index element={<ApplicationForm />} />
               <Route path="chatPage" element={<ChatPage />} />
               <Route path="uploadPage" element={<UploadPage />} />

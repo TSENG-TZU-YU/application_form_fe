@@ -5,11 +5,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { FaArrowLeft } from 'react-icons/fa';
 
 import '../styles/caseDetail/_caseDetail.scss';
-import Header from '../Header';
 
 function CaseDetail() {
   const navBtn = [
-    { title: '申請表', url: '/header/caseDetail' },
+    { title: '申請表', url: '/header/caseDetail/:id' },
     { title: '討論區', url: '/header/caseDetail/chatPage' },
     { title: '上傳文件', url: '/header/caseDetail/uploadPage' },
   ];

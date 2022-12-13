@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../utils/config';
+import axios from 'axios';
 
 import '../styles/caseManagement/_caseManagement.scss';
 import CategoryFilter from './Component/CategoryFilter.js';
 import StatusFilter from './Component/StatusFilter.js';
 import DateFilter from './Component/DateFilter.js';
 import CheckStatePage from './Component/CheckStatePage.js';
-import Header from '../Header';
 
 import { FaEye } from 'react-icons/fa';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
@@ -20,6 +22,16 @@ function CaseManagement() {
   const [minDateValue, setMinDateValue] = useState('');
   const [maxDate, setMaxDate] = useState('');
   const [minDate, setMinDate] = useState('');
+  const [allData, setAllData] = useState([]);
+
+  // 取得所有資料
+  useEffect(() => {
+    let getCampingData = async () => {
+      let response = await axios.get(`${API_URL}/applicationData`);
+      setAllData(response.data.result);
+    };
+    getCampingData();
+  }, []);
 
   return (
     <>
@@ -94,32 +106,37 @@ function CaseManagement() {
               <th>需求進度</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>轉件人:林鈺珊</td>
-              <td>NP20221128001</td>
-              <td>金陽信資產管理</td>
-              <td>曾子瑜</td>
-              <td>黃聖崴</td>
-              <td>現有系統增修</td>
-              <td>2022/11/28 13:21</td>
-              <td
-                onClick={() => {
-                  setCheckState(true);
-                }}
-              >
-                <span className="viewList">案件進行中</span>
-              </td>
-              <td className="posClick">
-                <Link to="caseDetail">
-                  <FaEye className="icons" />
-                </Link>
 
-                {/* <div className="hadClick">NEW</div> */}
-              </td>
-              <td>進度(3/4)</td>
-            </tr>
-          </tbody>
+          {allData.map((v) => {
+            return (
+              <tbody key={uuidv4()}>
+                <tr>
+                  <td>轉件人:林鈺珊</td>
+                  <td>{v.case_number}</td>
+                  <td>{v.applicant_unit}</td>
+                  <td>{v.user}</td>
+                  <td>{v.handler}</td>
+                  <td>{v.application_category}</td>
+                  <td>{v.create_time}</td>
+                  <td
+                    onClick={() => {
+                      setCheckState(true);
+                    }}
+                  >
+                    <span className="viewList">{v.name}</span>
+                  </td>
+                  <td className="posClick">
+                    <Link to={`caseDetail/${v.case_number}`}>
+                      <FaEye className="icons" />
+                    </Link>
+
+                    {/* <div className="hadClick">NEW</div> */}
+                  </td>
+                  <td>進度(3/4)</td>
+                </tr>
+              </tbody>
+            );
+          })}
         </table>
       </div>
       {/* </Header> */}

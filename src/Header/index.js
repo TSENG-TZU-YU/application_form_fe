@@ -23,7 +23,6 @@ function Header({
   setCaseManagement,
   setTrial,
   trial,
-  children,
 }) {
   const { member, setMember, isLogin, setIsLogin } = useAuth();
   const [auth, setAuth] = useState([]);
@@ -63,7 +62,7 @@ function Header({
     // };
     // auth();
     setAuth({ ...member });
-  }, []);
+  }, [member]);
   return (
     <>
       <div className="navTop">
@@ -103,9 +102,6 @@ function Header({
         </div>
 
         <div className="left">
-          {/* <Application /> */}
-          {/* <CaseManagement /> */}
-          {/* {children} */}
           <Outlet />
         </div>
       </div>

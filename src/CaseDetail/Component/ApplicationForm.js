@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid';
 import '../../styles/caseDetail/_applicationForm.scss';
 import EditNeedPage from './EditNeedPage';
 import AddStateForm from './AddStateForm';
-import { AiFillCloseSquare } from 'react-icons/ai';
 
 function ApplicationForm() {
   const [editPage, setEditPage] = useState(false);
@@ -33,6 +32,8 @@ function ApplicationForm() {
     if (input === 'dir') newData[i].directions = val;
     setEditNeed(newData);
   };
+
+  
 
   return (
     <div className="appFormContainer">
