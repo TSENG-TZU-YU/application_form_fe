@@ -20,7 +20,7 @@ import ChatPage from './CaseDetail/Component/ChatPage';
 
 function App() {
   const [application, setApplication] = useState(false);
-  const [caseManagement, setCaseManagement] = useState(true);
+  const [caseManagement, setCaseManagement] = useState(false);
   const [trial, setTrial] = useState(false);
 
   // console.log('application', application);

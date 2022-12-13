@@ -23,7 +23,9 @@ function LogIn() {
 
   const submit = async () => {
     try {
-      let res = await axios.post('http://localhost:3001/api/login', login);
+      let res = await axios.post('http://localhost:3001/api/login', login, {
+        withCredentials: true,
+      });
       navigate('/header');
       setMember(res.data);
       console.log(res.data);

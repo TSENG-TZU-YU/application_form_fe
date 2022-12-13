@@ -33,6 +33,22 @@ function CaseManagement() {
     getCampingData();
   }, []);
 
+  const [applicationCheck, setApplicationCheck] = useState([]);
+
+  useEffect(() => {
+    async function getCheck() {
+      try {
+        let res = await axios.get(
+          'http://localhost:3001/api/application_check'
+        );
+        setApplicationCheck(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    getCheck();
+  }, []);
+
   return (
     <>
       {/* <Header> */}
