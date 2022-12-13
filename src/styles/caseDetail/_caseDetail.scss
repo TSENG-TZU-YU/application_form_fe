@@ -1,57 +1,62 @@
 @import '../variable';
 
 .caseDetailContainer {
-  position: absolute;
+  position: relative;
   width: calc(100vw - 200px);
   height: calc(100vh - 70px);
-  background: $bcgBlock;
+  // background: $bcgBlock;
   z-index: 20;
   font-size: 12px;
   @include flexCenter;
+  .prePage {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: $focusClrG;
+    cursor: pointer;
+    &:hover .preIcon {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    .preIcon {
+      margin-right: 5px;
+      transform: translateX(20px);
+      transition: 0.3s linear;
+      opacity: 0;
+    }
+    span{
+      background: $mainClrW;
+      z-index: 10;
+    }
+  }
   .caseDetailContain {
     position: relative;
     width: 60%;
     height: 95%;
     background: $mainClrW;
     padding: 0 20px;
-    .closePageIcon {
-      position: absolute;
-      font-size: 1.2rem;
-      top: 8px;
-      right: 8px;
-      cursor: pointer;
-    }
+    border: 1px solid #ccc;
     nav {
       ul {
         @include flexCenter;
         border-bottom: 1px solid #ccc;
         li {
-          background: lemonchiffon;
           font-size: 16px;
           font-weight: 600;
-          padding: 8px 15px;
-          margin: 10px 20px;
+          margin: 5px 20px;
           cursor: pointer;
+          .linkPad {
+            padding: 4px 15px;
+          }
+          .active {
+            color: $focusClrG;
+          }
         }
       }
-    }
-  }
-}
-
-// appForm
-.appFormContainer {
-  background: lemonchiffon;
-  max-width: 90%;
-  margin: 0 auto;
-  .statusFormContainer {
-    background: #ddd;
-    max-width: fit-content;
-    margin: 0 auto;
-    padding: 8px;
-    font-size: 14px;
-    textarea {
-      resize: none;
-      @include scrollbarContain
     }
   }
 }

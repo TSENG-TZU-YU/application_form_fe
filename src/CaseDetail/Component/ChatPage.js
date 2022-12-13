@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { FaTelegramPlane } from 'react-icons/fa';
 import '../../styles/caseDetail/_chatPage.scss';
 
-function ChatPage({
-  setSubmitMessage,
-  setSubmitMsgTrue,
-  submitMsgTrue,
-  handleSubmit,
-}) {
+function ChatPage() {
+  const [submitMessage, setSubmitMessage] = useState('');
+  const [submitMsgTrue, setSubmitMsgTrue] = useState(false);
+
+  // message submit
+  const handleSubmit = () => {
+    if (submitMsgTrue) {
+      console.log('msg', submitMessage);
+    }
+  };
   return (
     <>
       <div className="userName">
@@ -29,7 +33,12 @@ function ChatPage({
             時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點
           </div>
         </div>
-
+        <div className="rightMsgContain">
+          <div className="msgTime">2022/01/01 14:30</div>
+          <div className="userMsg">
+            時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點時間太趕了喔!要晚一點
+          </div>
+        </div>
         <div className="rightMsgContain">
           <div className="msgTime">2022/01/01 14:30</div>
           <div className="userMsg">
@@ -55,7 +64,7 @@ function ChatPage({
           className="submitMsg"
           placeholder="請輸入訊息..."
           name="ttt"
-          cols="85"
+          // cols="100"
           rows="2"
           onChange={(e) => {
             let msg = e.target.value;

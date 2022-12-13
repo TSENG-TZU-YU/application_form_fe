@@ -12,6 +12,10 @@ import { AuthProvider } from './utils/use_auth';
 import Application from './Application';
 import CaseManagement from './CaseManagement/CaseManagement.js';
 import CaseDetail from './CaseDetail/CaseDetail';
+import ApplicationForm from './CaseDetail/Component/ApplicationForm';
+import UploadPage from './CaseDetail/Component/UploadPage';
+import ChatPage from './CaseDetail/Component/ChatPage';
+
 function App() {
   const [application, setApplication] = useState(false);
   const [caseManagement, setCaseManagement] = useState(false);
@@ -48,6 +52,11 @@ function App() {
                 />
               }
             />
+            <Route path="caseDetail" element={<CaseDetail />}>
+              <Route index element={<ApplicationForm />} />
+              <Route path="chatPage" element={<ChatPage />} />
+              <Route path="uploadPage" element={<UploadPage />} />
+            </Route>
           </Route>
         </Routes>
       </AuthProvider>

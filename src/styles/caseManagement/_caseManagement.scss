@@ -8,8 +8,6 @@
   font-size: 12px;
   .sortSelect {
     // background: lemonchiffon;
-    // max-width: 80%;
-    // margin: 0 auto 20px;
     padding: 30px 20px 10px 20px;
     display: flex;
     justify-content: space-between;
@@ -18,7 +16,7 @@
     }
   }
   .caseContain {
-    margin: 0 auto;
+    margin: 20px auto 0;
     tbody :hover {
       background: #eee;
     }

@@ -22,13 +22,16 @@ $navBar:#c09e8280;
 
 @mixin scrollbar {
   overflow: auto;
+  // &::-webkit-scrollbar {
+  //   display: none;
+  // }
   &::-webkit-scrollbar {
     width: 7px;
     //   height: 3px;
   }
   &::-webkit-scrollbar-thumb {
     background-color: #807060c0;
-    background-clip: padding-box;
+    // background-clip: padding-box;
     border-radius: 3px;
   }
 }
@@ -41,7 +44,7 @@ $navBar:#c09e8280;
   }
   &::-webkit-scrollbar-thumb {
     background-color: #ddd;
-    background-clip: padding-box;
+    // background-clip: padding-box;
     border-radius: 3px;
   }
 }

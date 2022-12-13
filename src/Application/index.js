@@ -19,8 +19,8 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
   const [submitValue, setSubmitValue] = useState([
     { handler: '', category: '', name: '', cycle: '' },
   ]);
-  // const [file, setFile] = useState([{ file: '' }]);
-  // console.log('file', file);
+  const [file, setFile] = useState([{ file: '' }]);
+  console.log('file', file);
 
   // console.log('submitValue', submitValue);
   console.log('addFile', addFile);
@@ -89,15 +89,18 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
     setAddFile(newData);
   };
   //單個檔案上傳
-  const onFileUpload = (val, i, input) => {
-    let formData = new FormData();
+  // const onFileUpload = (val, i, input) => {
+  //   let formData = new FormData();
 
-    formData.append('upFile', val);
+  //   formData.append('upFile', val);
 
-    let newData = [...addFile];
-    if (input === 'file') newData[i].file = val;
-
-    setAddFile(newData);
+  //   let newData = [...addFile];
+  //   if (input === 'file') newData[i].file = val;
+  //   console.log('3', newData);
+  //   setAddFile(newData);
+  // };
+  const onFileUpload = (e) => {
+    setFile(e.target.files[0]);
   };
 
   useEffect(() => {
@@ -197,10 +200,17 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
       // }
 
       // TODO:map
+      let formData = new FormData();
+
+      formData.append('upFile', file);
 
       let response = await axios.post(
         'http://localhost:3001/api/application_post',
-        addFile
+
+        {
+          formData: formData,
+          file: file.name,
+        }
       );
       console.log('res', response);
     } catch (err) {
@@ -373,9 +383,11 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
                 <input
                   type="file"
                   name="upFile"
-                  onChange={(e) => {
-                    onFileUpload(e.target.files[0], i, 'file');
-                  }}
+                  // multiple
+                  // onChange={(e) => {
+                  //   onFileUpload(e.target.files[0], i, 'file');
+                  // }}
+                  onChange={onFileUpload}
                 />
                 <IoMdCloseCircle size="20" onClick={deleteFile} />
               </div>

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Select from 'react-select';
 
 const sortOption = [
-  { value: 0, label: '請選擇狀態' },
+  { value: '', label: '----請選擇狀態----' },
   { value: 1, label: '主管待審核' },
   { value: 2, label: '主管審核中' },
   { value: 3, label: '主管退件' },
@@ -50,7 +50,7 @@ const customStyles = {
     ...base,
     border: '1px solid #817161',
     minHeight: '32px',
-    // width: '150px',
+    width: '150px',
     borderColor: state.isFocused ? '#817161' : 'hsl(0, 0%, 80%)',
     boxShadow: 0,
     '&:hover': {
