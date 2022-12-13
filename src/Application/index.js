@@ -15,12 +15,15 @@ import { useAuth } from '../utils/use_auth';
 function Application({ setApplication, setCaseManagement, setTrial }) {
   const navigate = useNavigate();
   const [addNeed, setAddNeed] = useState([{ title: '', text: '' }]);
-  const [addFile, setAddFile] = useState([{ file: Number(new Date()) }]);
+  const [addFile, setAddFile] = useState([{ file: '' }]);
   const [submitValue, setSubmitValue] = useState([
     { handler: '', category: '', name: '', cycle: '' },
   ]);
+  // const [file, setFile] = useState([{ file: '' }]);
+  // console.log('file', file);
 
   // console.log('submitValue', submitValue);
+  console.log('addFile', addFile);
 
   //使用者資料
   const { member, setMember, isLogin, setIsLogin } = useAuth();
@@ -73,9 +76,9 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
   //增加上傳檔案
   const addF = () => {
     const newAdd = {
-      file: Number(new Date()),
+      file: '',
     };
-    const newAdds = [newAdd, ...addFile];
+    const newAdds = [...addFile, newAdd];
     setAddFile(newAdds);
   };
   //刪除檔案
@@ -86,8 +89,15 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
     setAddFile(newData);
   };
   //單個檔案上傳
-  const onFileUpload = (event) => {
-    console.log(event.target.files[0]);
+  const onFileUpload = (val, i, input) => {
+    let formData = new FormData();
+
+    formData.append('upFile', val);
+
+    let newData = [...addFile];
+    if (input === 'file') newData[i].file = val;
+
+    setAddFile(newData);
   };
 
   useEffect(() => {
@@ -132,57 +142,67 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
   //送出表單內容
   async function submit() {
     try {
-      if (submitValue[0].handler === '0' || submitValue[0].handler === '') {
-        setHandler(true);
-      }
-      if (submitValue[0].category === '0' || submitValue[0].category === '') {
-        setCategory(true);
-      }
-      if (submitValue[0].name === '') {
-        setName(true);
-      }
-      if (submitValue[0].cycle === '0' || submitValue[0].cycle === '') {
-        setCycle(true);
-      }
-      if (addNeed[0].title === '' || addNeed[0].text === '') {
-        setNeed(true);
-      }
+      // if (submitValue[0].handler === '0' || submitValue[0].handler === '') {
+      //   setHandler(true);
+      // }
+      // if (submitValue[0].category === '0' || submitValue[0].category === '') {
+      //   setCategory(true);
+      // }
+      // if (submitValue[0].name === '') {
+      //   setName(true);
+      // }
+      // if (submitValue[0].cycle === '0' || submitValue[0].cycle === '') {
+      //   setCycle(true);
+      // }
+      // if (addNeed[0].title === '' || addNeed[0].text === '') {
+      //   setNeed(true);
+      // }
 
-      if (
-        submitValue[0].handler !== '0' &&
-        submitValue[0].handler !== '' &&
-        submitValue[0].category !== '0' &&
-        submitValue[0].category !== '' &&
-        submitValue[0].name !== '' &&
-        submitValue[0].cycle !== '' &&
-        addNeed[0].title !== '' &&
-        addNeed[0].text !== ''
-      ) {
-        Swal.fire({
-          icon: 'success',
-          title: '已送出申請',
-        }).then(function () {
-          navigate('/header');
-          setCaseManagement(true);
-          setApplication(false);
-          setTrial(false);
-        });
-        let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
-        let response = await axios.post(
-          'http://localhost:3001/api/application_post',
-          {
-            ...submitValue[0],
-            need: addNeed,
-            number: parseInt(Date.now() / 10000),
-            id: member.name,
-            // TODO: 申請狀態 一般職員跟主管送出的狀態不同
-            status: 1,
-            create_time: endTime,
-          }
-        );
+      // if (
+      //   submitValue[0].handler !== '0' &&
+      //   submitValue[0].handler !== '' &&
+      //   submitValue[0].category !== '0' &&
+      //   submitValue[0].category !== '' &&
+      //   submitValue[0].name !== '' &&
+      //   submitValue[0].cycle !== '' &&
+      //   addNeed[0].title !== '' &&
+      //   addNeed[0].text !== ''
+      // ) {
+      //   Swal.fire({
+      //     icon: 'success',
+      //     title: '已送出申請',
+      //   }).then(function () {
+      //     navigate('/header');
+      //     setCaseManagement(true);
+      //     setApplication(false);
+      //     setTrial(false);
+      //   });
+      //   let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+      //   let formData = new FormData();
+      //   let response = await axios.post(
+      //     'http://localhost:3001/api/application_post',
+      //     {
+      //       ...submitValue[0],
+      //       need: addNeed,
+      //       number: parseInt(Date.now() / 10000),
+      //       id: member.name,
+      //       // TODO: 申請狀態 一般職員跟主管送出的狀態不同
+      //       status: 1,
+      //       create_time: endTime,
+      //       file: formData.append('upFile', addFile),
+      //     }
+      //   );
 
-        console.log(response);
-      }
+      //   console.log(response);
+      // }
+
+      // TODO:map
+
+      let response = await axios.post(
+        'http://localhost:3001/api/application_post',
+        addFile
+      );
+      console.log('res', response);
     } catch (err) {
       console.log('sub', err);
     }
@@ -350,7 +370,13 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
           {addFile.map((v, i) => {
             return (
               <div key={i} className="two">
-                <input type={'file'} onChange={onFileUpload} />
+                <input
+                  type="file"
+                  name="upFile"
+                  onChange={(e) => {
+                    onFileUpload(e.target.files[0], i, 'file');
+                  }}
+                />
                 <IoMdCloseCircle size="20" onClick={deleteFile} />
               </div>
             );

@@ -58,7 +58,6 @@ function CaseDetail({ setCaseDetailPage }) {
         <AiFillCloseSquare
           className="closePageIcon"
           onClick={() => {
-            console.log('aaa');
             setCaseDetailPage(false);
           }}
         />

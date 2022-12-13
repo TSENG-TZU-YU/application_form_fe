@@ -29,9 +29,8 @@ function Header({
 
   //權限
   const [user, setUser] = useState();
-  // const { director, setDirector } = useAuth();
+
   const [handler, setHandler] = useState();
-  // const { associate, setAssociater } = useAuth();
 
   //會員登入狀態判斷
   useEffect(() => {
