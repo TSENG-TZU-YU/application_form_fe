@@ -19,11 +19,8 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
   const [submitValue, setSubmitValue] = useState([
     { handler: '', category: '', name: '', cycle: '' },
   ]);
-  const [file, setFile] = useState([{ file: '' }]);
-  console.log('file', file);
 
-  // console.log('submitValue', submitValue);
-  console.log('addFile', addFile);
+  console.log('submitValue', submitValue);
 
   //使用者資料
   const { member, setMember, isLogin, setIsLogin } = useAuth();
@@ -89,18 +86,11 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
     setAddFile(newData);
   };
   //單個檔案上傳
-  // const onFileUpload = (val, i, input) => {
-  //   let formData = new FormData();
+  const onFileUpload = (val, i, input) => {
+    let newData = [...addFile];
+    if (input === 'file') newData[i].file = val;
 
-  //   formData.append('upFile', val);
-
-  //   let newData = [...addFile];
-  //   if (input === 'file') newData[i].file = val;
-  //   console.log('3', newData);
-  //   setAddFile(newData);
-  // };
-  const onFileUpload = (e) => {
-    setFile(e.target.files[0]);
+    setAddFile(newData);
   };
 
   useEffect(() => {
@@ -145,74 +135,108 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
   //送出表單內容
   async function submit() {
     try {
-      // if (submitValue[0].handler === '0' || submitValue[0].handler === '') {
-      //   setHandler(true);
-      // }
-      // if (submitValue[0].category === '0' || submitValue[0].category === '') {
-      //   setCategory(true);
-      // }
-      // if (submitValue[0].name === '') {
-      //   setName(true);
-      // }
-      // if (submitValue[0].cycle === '0' || submitValue[0].cycle === '') {
-      //   setCycle(true);
-      // }
-      // if (addNeed[0].title === '' || addNeed[0].text === '') {
-      //   setNeed(true);
-      // }
+      if (submitValue[0].handler === '0' || submitValue[0].handler === '') {
+        setHandler(true);
+      }
+      if (submitValue[0].category === '0' || submitValue[0].category === '') {
+        setCategory(true);
+      }
+      if (submitValue[0].name === '') {
+        setName(true);
+      }
+      if (submitValue[0].cycle === '0' || submitValue[0].cycle === '') {
+        setCycle(true);
+      }
+      if (addNeed[0].title === '' || addNeed[0].text === '') {
+        setNeed(true);
+      }
 
-      // if (
-      //   submitValue[0].handler !== '0' &&
-      //   submitValue[0].handler !== '' &&
-      //   submitValue[0].category !== '0' &&
-      //   submitValue[0].category !== '' &&
-      //   submitValue[0].name !== '' &&
-      //   submitValue[0].cycle !== '' &&
-      //   addNeed[0].title !== '' &&
-      //   addNeed[0].text !== ''
-      // ) {
-      //   Swal.fire({
-      //     icon: 'success',
-      //     title: '已送出申請',
-      //   }).then(function () {
-      //     navigate('/header');
-      //     setCaseManagement(true);
-      //     setApplication(false);
-      //     setTrial(false);
-      //   });
-      //   let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
-      //   let formData = new FormData();
-      //   let response = await axios.post(
-      //     'http://localhost:3001/api/application_post',
-      //     {
-      //       ...submitValue[0],
-      //       need: addNeed,
-      //       number: parseInt(Date.now() / 10000),
-      //       id: member.name,
-      //       // TODO: 申請狀態 一般職員跟主管送出的狀態不同
-      //       status: 1,
-      //       create_time: endTime,
-      //       file: formData.append('upFile', addFile),
-      //     }
-      //   );
+      if (
+        submitValue[0].handler !== '0' &&
+        submitValue[0].handler !== '' &&
+        submitValue[0].category !== '0' &&
+        submitValue[0].category !== '' &&
+        submitValue[0].name !== '' &&
+        submitValue[0].cycle !== '' &&
+        addNeed[0].title !== '' &&
+        addNeed[0].text !== ''
+      ) {
+        Swal.fire({
+          icon: 'success',
+          title: '已送出申請',
+        }).then(function () {
+          navigate('/header');
+          setCaseManagement(true);
+          setApplication(false);
+          setTrial(false);
+        });
+        let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+        let response = await axios.post(
+          'http://localhost:3001/api/application_post',
+          {
+            ...submitValue[0],
+            need: addNeed,
+            number: parseInt(Date.now() / 10000),
+            id: member.name,
+            // TODO: 申請狀態 一般職員跟主管送出的狀態不同
+            status: 1,
+            create_time: endTime,
+          }
+        );
+      }
+    } catch (err) {
+      console.log('sub', err);
+    }
+  }
 
-      //   console.log(response);
-      // }
+  // 上傳檔案
+  async function submitFile() {
+    try {
+      if (submitValue[0].handler === '0' || submitValue[0].handler === '') {
+        setHandler(true);
+      }
+      if (submitValue[0].category === '0' || submitValue[0].category === '') {
+        setCategory(true);
+      }
+      if (submitValue[0].name === '') {
+        setName(true);
+      }
+      if (submitValue[0].cycle === '0' || submitValue[0].cycle === '') {
+        setCycle(true);
+      }
+      if (addNeed[0].title === '' || addNeed[0].text === '') {
+        setNeed(true);
+      }
 
-      // TODO:map
-      let formData = new FormData();
+      if (
+        submitValue[0].handler !== '0' &&
+        submitValue[0].handler !== '' &&
+        submitValue[0].category !== '0' &&
+        submitValue[0].category !== '' &&
+        submitValue[0].name !== '' &&
+        submitValue[0].cycle !== '' &&
+        addNeed[0].title !== '' &&
+        addNeed[0].text !== ''
+      ) {
+        let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
 
-      formData.append('upFile', file);
-
-      let response = await axios.post(
-        'http://localhost:3001/api/application_post',
-
-        {
-          formData: formData,
-          file: file.name,
+        const formData = new FormData();
+        for (let i = 0; i < addFile.length; i++) {
+          formData.append(i, addFile[i].file);
         }
-      );
-      console.log('res', response);
+
+        formData.append('number', parseInt(Date.now() / 10000));
+        formData.append('create_time', endTime);
+        let response = await axios.post(
+          'http://localhost:3001/api/application_post/file',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+      }
     } catch (err) {
       console.log('sub', err);
     }
@@ -293,6 +317,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
                   <div key={i} className="form-check">
                     <input
                       className="form-check-input "
+                      value={i + 1}
                       name="cycle'"
                       type="radio"
                       onChange={(e) => {
@@ -384,10 +409,9 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
                   type="file"
                   name="upFile"
                   // multiple
-                  // onChange={(e) => {
-                  //   onFileUpload(e.target.files[0], i, 'file');
-                  // }}
-                  onChange={onFileUpload}
+                  onChange={(e) => {
+                    onFileUpload(e.target.files[0], i, 'file');
+                  }}
                 />
                 <IoMdCloseCircle size="20" onClick={deleteFile} />
               </div>
@@ -398,7 +422,13 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
           備註: 將由處理人員主動與您聯繫討論預計完成時間。
         </div>
 
-        <div className="submit" onClick={submit}>
+        <div
+          className="submit"
+          onClick={() => {
+            submit();
+            submitFile();
+          }}
+        >
           送出
         </div>
       </div>
