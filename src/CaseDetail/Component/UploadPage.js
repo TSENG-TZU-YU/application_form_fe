@@ -5,6 +5,7 @@ import { MdOutlineAddBox } from 'react-icons/md';
 import { HiOutlineDocumentPlus } from 'react-icons/hi2';
 import { FaTrashAlt } from 'react-icons/fa';
 import { AiFillCloseCircle } from 'react-icons/ai';
+import FileDownload from 'react-file-download';
 
 import '../../styles/caseDetail/_uploadPage.scss';
 import { useAuth } from '../../utils/use_auth';
@@ -14,6 +15,8 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
   const [mgtFilesPage, setMgtUserFilesPage] = useState(false);
   const [filesData, setFilesData] = useState([{ fileName: '' }]);
   const { member, setMember } = useAuth();
+  const [getUserTotalFile, setGetUserTotalFile] = useState([]);
+
   useEffect(() => {
     async function getMember() {
       try {
@@ -33,6 +36,74 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
       setAddStatus(false);
     }
   }, []);
+
+  useEffect(() => {
+    async function toGetUserFile() {
+      try {
+        let response = await axios.get(
+          `http://localhost:3001/api/files/getUserFile/${caseNum}`
+        );
+        setGetUserTotalFile(response.data);
+        // setGetUserFile(response.data.getUserFile);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    toGetUserFile();
+  }, []);
+
+  // function getFileNameFromContentDisposition(contentDisposition) {
+  //   if (!contentDisposition) return null;
+
+  //   const match = contentDisposition.match(/filename="?([^"]+)"?/);
+
+  //   return match ? match[1] : null;
+  // }
+
+  // useEffect(()=>{
+
+  // },[ fileName])
+  const handleDownload = async (fileName) => {
+    await axios({
+      url: 'http://localhost:3001/api/files',
+      data: {
+        name: fileName,
+      },
+      method: 'POST',
+      responseType: 'blob', // important 下載檔案需要轉
+    }).then((response) => {
+      // const actualFileName = getFileNameFromContentDisposition(
+      //   response.headers['content-disposition']
+      // );
+      // console.log(
+      //   '11111',
+      //   decodeURIComponent(response.headers['content-disposition'])
+      // );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+    });
+  };
+
+  //整理檔案資料
+  const map = {};
+  const newGetUserFile = getUserTotalFile
+    .reduce((acc, cur) => {
+      const { create_time, file_no, name } = cur;
+      const item = { file_no, name };
+      if (!map[create_time]) {
+        map[create_time] = { create_time, item: [item] };
+        acc = [...acc, map[create_time]];
+      } else {
+        map[create_time].item.push({ file_no, name });
+      }
+      // console.log('item', item);
+      return acc;
+    }, [])
+    .sort((a, b) => new Date(b.name) - new Date(a.name));
 
   //   files upload
   //   update contain
@@ -216,7 +287,35 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
         {/* 管理者 */}
         {userFilesPage === true && mgtFilesPage === false ? (
           <div className="viewFilesContain">
-            <div className="pt-2">
+            {newGetUserFile.map((v, i) => {
+              return (
+                <div key={i} className="pt-2">
+                  <span className="filesTime">
+                    {v.create_time} (處理人接收時間 : 2022/12/13 12:12)
+                  </span>
+                  {newGetUserFile[i].item.map((v, i) => {
+                    return (
+                      <div key={i} className="pt-2">
+                        <span>{i + 1}.</span>
+                        <span className="ms-1 me-2">
+                          {v.file_no}
+                          {i}
+                        </span>
+                        <span
+                          onClick={() => {
+                            handleDownload(v.name);
+                          }}
+                        >
+                          {v.name}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+
+            {/* <div className="pt-2">
               <span className="filesTime">
                 2022/12/12 13:14 (處理人接收時間 : 2022/12/13 12:12)
               </span>
@@ -230,52 +329,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
                 <span className="ms-1 me-2">NPB-11111291330-001</span>
                 <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
               </div>
-            </div>
-            <div className="pt-2">
-              <span className="filesTime">
-                2022/12/12 13:14 (處理人接收時間 : 2022/12/13 12:12)
-              </span>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-            </div>
-            <div className="pt-2">
-              <span className="filesTime">
-                2022/12/12 13:14 (處理人接收時間 : 2022/12/13 12:12)
-              </span>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-            </div>
-            <div className="pt-2">
-              <span className="filesTime">
-                2022/12/12 13:14 (處理人接收時間 : 2022/12/13 12:12)
-              </span>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-            </div>
+            </div> */}
           </div>
         ) : (
           <div className="viewFilesContain">
