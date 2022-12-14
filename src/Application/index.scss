@@ -47,13 +47,7 @@
           margin-right: 8px;
           margin-top: 4px;
         }
-       
       }
-      // & .option:first-child {
-      //   span {
-      //     display: block;
-      //   }
-      // }
 
       .check {
         display: flex;
@@ -72,7 +66,11 @@
     .needs {
       width: 80%;
       justify-content: start;
-
+      .addIcon {
+        font-size: 1.3rem;
+        cursor: pointer;
+        color: $focusClrG;
+      }
       & .need:first-child {
         .two {
           display: none;
@@ -83,7 +81,9 @@
           display: flex;
           justify-content: space-between;
           align-items: center;
-          background-color: antiquewhite;
+          background-color: $header;
+          color: aliceblue;
+
           span {
             color: red;
             margin-left: 5px;
@@ -111,7 +111,8 @@
       .fileName {
         display: flex;
         justify-content: space-between;
-        background-color: rgb(140, 151, 249);
+        color: aliceblue;
+        background-color: $header;
         div {
           display: flex;
           div {
@@ -135,10 +136,13 @@
     .submit {
       display: flex;
       justify-content: center;
-      border: 1px solid red;
+      border: 1px solid $subClrBrown;
+      background-color: $header;
+      border-radius: 10px;
       margin: 30px 0;
       padding: 5px 10px;
       cursor: pointer;
+      color: aliceblue;
     }
   }
 }

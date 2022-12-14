@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import moment from 'moment';
 
 //react-icons
-import { IoIosAddCircle } from 'react-icons/io';
+import { MdOutlineAddBox } from 'react-icons/md';
 import { IoMdCloseCircle } from 'react-icons/io';
 import axios from 'axios';
 
@@ -170,7 +170,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
           setApplication(false);
           setTrial(false);
         });
-        let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+        let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm');
         let response = await axios.post(
           'http://localhost:3001/api/application_post',
           {
@@ -337,8 +337,8 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
         </div>
         {/* 需求 */}
         <div className="add handler">
-          <div>(增加列點1. 2.)</div>
-          <IoIosAddCircle size="20" onClick={addN} />
+          {/* <div>(增加列點1. 2.)</div> */}
+          <MdOutlineAddBox size="20" onClick={addN} className="addIcon" />
         </div>
         <div className="needs">
           {addNeed.map((v, i) => {
@@ -402,7 +402,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
               <div>副檔名</div>
               <div>(選擇新專案必須上傳RFP 文件)</div>
             </div>
-            <IoIosAddCircle size="20" onClick={addF} />
+            <MdOutlineAddBox size="20" onClick={addF} className="addIcon" />
           </div>
           {addFile.map((v, i) => {
             return (
@@ -411,6 +411,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
                   type="file"
                   name="upFile"
                   // multiple
+                  // accept=".json,.csv,.txt,.text,application/json,text/csv,pdf"
                   onChange={(e) => {
                     onFileUpload(e.target.files[0], i, 'file');
                   }}
