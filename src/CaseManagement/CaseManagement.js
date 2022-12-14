@@ -26,6 +26,8 @@ function CaseManagement({ caseNum, setCaseNum }) {
   const [minDate, setMinDate] = useState('');
   const [memberId, srtMemberId] = useState('');
   const [allData, setAllData] = useState([]);
+  const [progress, setProgress] = useState([]);
+  const [caseHistory, setCaseHistory] = useState([]);
 
   // 檢查會員
   useEffect(() => {
@@ -51,14 +53,37 @@ function CaseManagement({ caseNum, setCaseNum }) {
         withCredentials: true,
       });
       setAllData(response.data.result);
+      setProgress(response.data.progressResult);
     };
     getCampingData();
   }, []);
 
+  // 取得detail Id 的值
+
+  let handleCaseHistory = async (caseNum) => {
+    let response = await axios.get(
+      `${API_URL}/applicationData/getCaseHistory/${caseNum}`,
+      {
+        withCredentials: true,
+      }
+    );
+    setCaseHistory(response.data.result);
+
+    // console.log(response.data.result[0].status_id);
+    // console.log("c", response.data.selectResult.splice(4 ));
+  };
+
   return (
     <>
       {/* <Header> */}
-      {checkState ? <CheckStatePage setCheckState={setCheckState} /> : ''}
+      {checkState ? (
+        <CheckStatePage
+          setCheckState={setCheckState}
+          caseHistory={caseHistory}
+        />
+      ) : (
+        ''
+      )}
 
       <div className="caseContainer">
         {/* 篩選 */}
@@ -143,6 +168,7 @@ function CaseManagement({ caseNum, setCaseNum }) {
                   <td
                     onClick={() => {
                       setCheckState(true);
+                      handleCaseHistory(v.case_number);
                     }}
                   >
                     <span className="viewList">{v.name}</span>
@@ -159,7 +185,9 @@ function CaseManagement({ caseNum, setCaseNum }) {
 
                     {/* <div className="hadClick">NEW</div> */}
                   </td>
-                  <td>進度(3/4)</td>
+                  <td>
+                    進度({v.cou}/{v.sum})
+                  </td>
                 </tr>
               </tbody>
             );

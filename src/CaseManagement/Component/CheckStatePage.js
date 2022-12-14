@@ -1,6 +1,8 @@
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
 import '../../styles/caseManagement/_checkStatePage.scss';
-export default function CheckStatePage({ setCheckState }) {
+export default function CheckStatePage({ setCheckState, caseHistory }) {
   return (
     <div className="checkStateContainer">
       <div
@@ -17,48 +19,23 @@ export default function CheckStatePage({ setCheckState }) {
           <thead>
             <tr>
               <th>案件編號</th>
-              <th>申請人</th>
               <th>處理人</th>
               <th>處理狀態</th>
               <th>處理時間</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>NP20221128001</td>
-              <td>曾子瑜</td>
-              <td>黃聖崴</td>
-              <td>案件進行中</td>
-              <td>2022/11/28 13:21</td>
-            </tr>
-          </tbody>
-          <tbody>
-            <tr>
-              <td>NP20221128001</td>
-              <td>曾子瑜</td>
-              <td>黃聖崴</td>
-              <td>案件進行中</td>
-              <td>2022/11/28 13:21</td>
-            </tr>
-          </tbody>
-          <tbody>
-            <tr>
-              <td>NP20221128001</td>
-              <td>曾子瑜</td>
-              <td>黃聖崴</td>
-              <td>案件進行中</td>
-              <td>2022/11/28 13:21</td>
-            </tr>
-          </tbody>
-          <tbody>
-            <tr>
-              <td>NP20221128001</td>
-              <td>曾子瑜</td>
-              <td>黃聖崴</td>
-              <td>案件進行中</td>
-              <td>2022/11/28 13:21</td>
-            </tr>
-          </tbody>
+          {caseHistory.map((v) => {
+            return (
+              <tbody key={uuidv4()}>
+                <tr>
+                  <td>{v.case_number}</td>
+                  <td>{v.handler}</td>
+                  <td>{v.select_state}</td>
+                  <td>{v.create_time}</td>
+                </tr>
+              </tbody>
+            );
+          })}
         </table>
       </div>
     </div>

@@ -178,7 +178,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
             need: addNeed,
             number: parseInt(Date.now() / 10000),
             id: member.id,
-            name:member.name,
+            name: member.name,
             // TODO: 申請狀態 一般職員跟主管送出的狀態不同
             status: 1,
             create_time: endTime,
@@ -362,6 +362,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
                     className="input"
                     type="text"
                     name="tt"
+                    value={addNeed[i].title}
                     placeholder="標題"
                     onChange={(e) => {
                       needChangerHandler(e.target.value, i, 'tt');

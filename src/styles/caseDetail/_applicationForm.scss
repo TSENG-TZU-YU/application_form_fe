@@ -98,13 +98,25 @@
       }
     }
     .selectContain {
-    //   background: lightcoral;
+      // background: lightcoral;
       display: flex;
       justify-content: center;
       margin: 0 auto;
       padding: 10px 0 0;
       font-size: 14px;
       border-top: 1px dashed $subClrBrown;
+      .selContain {
+        position: relative;
+        display: flex;
+        justify-content: center;
+      }
+      .selectRemind {
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+        font-size: 12px;
+        color: $focusClrG;
+      }
       .confirmBtn {
         @include submitBtn(#ccc);
       }
@@ -115,4 +127,3 @@
     }
   }
 }
-

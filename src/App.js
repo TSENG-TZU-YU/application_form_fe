@@ -22,7 +22,8 @@ function App() {
   const [application, setApplication] = useState(false);
   const [caseManagement, setCaseManagement] = useState(false);
   const [trial, setTrial] = useState(false);
-  const [addStatus, setAddStatus] = useState(false);
+  const [addStatus, setAddStatus] = useState(true);
+  const [handlerSelect, setHandlerSelect] = useState(true);
   const [caseNum, setCaseNum] = useState('');
 
   // console.log('application', application);
@@ -68,6 +69,8 @@ function App() {
                     setAddStatus={setAddStatus}
                     addStatus={addStatus}
                     caseNum={caseNum}
+                    handlerSelect={handlerSelect}
+                    setHandlerSelect={setHandlerSelect}
                   />
                 }
               />

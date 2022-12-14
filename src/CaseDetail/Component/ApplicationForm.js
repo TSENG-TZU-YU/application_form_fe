@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../utils/use_auth';
@@ -9,16 +11,40 @@ import '../../styles/caseDetail/_applicationForm.scss';
 import EditNeedPage from './EditNeedPage';
 import AddStateForm from './AddStateForm';
 
-function ApplicationForm({ setAddStatus, addStatus }) {
+function ApplicationForm({
+  setAddStatus,
+  addStatus,
+  handlerSelect,
+  setHandlerSelect,
+}) {
+  const navigate = useNavigate();
   const [editPage, setEditPage] = useState(false);
   const [addStateForm, setAddStateForm] = useState(false);
   const { member, setMember } = useAuth();
   const { num } = useParams();
+  const [needState, setNeedState] = useState('');
   const [needData, setNeedData] = useState([]);
   const [detailData, setDetailData] = useState([]);
+  const [handleData, setHandleData] = useState([]);
+  const [handlerData, setHandlerData] = useState([]);
+  const [selectData, setSelectData] = useState([]);
+  const [handlerVal, setHandlerVal] = useState({ val: '' });
+  const [postVal, setPostVal] = useState({
+    caseNumber: '',
+    handler: '',
+    status: '',
+    transfer: '',
+    remark: '',
+    finishTime: '',
+  });
 
-  const [editNeed, setEditNeed] = useState([{ title: '', directions: '' }]);
+  const [selectRemind, setSelectRemind] = useState(false);
 
+  const [needLoading, setNeedLoading] = useState(false);
+  const [needLen, setNeedLen] = useState('');
+  const [needSumLen, setNeedSumLen] = useState('');
+
+  const [editNeed, setEditNeed] = useState([]);
   const radioInput = [
     { title: '一次性', value: '1' },
     { title: '短期', value: '2' },
@@ -49,20 +75,66 @@ function ApplicationForm({ setAddStatus, addStatus }) {
   // 取得detail Id 的值
   useEffect(() => {
     let getCampingDetailData = async () => {
-      let response = await axios.get(`${API_URL}/applicationData/${num}`);
+      let response = await axios.get(`${API_URL}/applicationData/${num}`, {
+        withCredentials: true,
+      });
       setDetailData(response.data.result);
       setNeedData(response.data.needResult);
-      // console.log(response.data.result);
-      // console.log(response.data.needResult);
+      setHandleData(response.data.handleResult);
+      setHandlerData(response.data.handlerResult);
+
+      // selectStatus filter
+      if (member.permissions_id === 2) {
+        setSelectData(response.data.selectResult.splice(0, 3));
+      } else {
+        setSelectData(response.data.selectResult.splice(4));
+      }
+      // setSelectData(response.data.selectResult);
+      // 目前狀態
+      setNeedState(response.data.result[0].status_id);
+      setNeedLen(parseInt(response.data.needResult.length));
+      setNeedSumLen(parseInt(response.data.needSum[0].checked));
+      // console.log(response.data.result[0].status_id);
+      // console.log("c", response.data.selectResult.splice(4 ));
     };
 
     getCampingDetailData();
-  }, [num]);
+  }, [num, needLoading]);
+
+  // 需求 checked
+  const handleNeedChecked = async (needId, checked) => {
+    if (checked === false) {
+      let response = await axios.put(
+        `${API_URL}/applicationData/checked/${needId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      setNeedLoading(!needLoading);
+      console.log('checked', response.data);
+    } else {
+      let response = await axios.put(
+        `${API_URL}/applicationData/unChecked/${needId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      setNeedLoading(!needLoading);
+      console.log('checked', response.data);
+    }
+  };
 
   //   需求修改表單
   // add need
   const handleAddNeed = () => {
-    let newData = [...editNeed, { title: '', directions: '' }];
+    let newData = [
+      ...editNeed,
+      {
+        requirement_name: '',
+        directions: '',
+        case_number_id: detailData[0].case_number,
+      },
+    ];
     setEditNeed(newData);
   };
 
@@ -77,15 +149,105 @@ function ApplicationForm({ setAddStatus, addStatus }) {
   //   update contain
   const handlerUpdateNeed = (val, i, input) => {
     let newData = [...editNeed];
-    if (input === 'tit') newData[i].title = val;
+    if (input === 'tit') newData[i].requirement_name = val;
     if (input === 'dir') newData[i].directions = val;
     setEditNeed(newData);
+  };
+
+  // post 處理狀態
+  const handlePostVal = (e) => {
+    let val = {
+      ...postVal,
+      [e.target.name]: e.target.value,
+      handler: detailData[0].handler,
+      caseNumber: detailData[0].case_number,
+    };
+    // console.log(val);
+    setPostVal(val);
+  };
+
+  // post 處理狀態
+  const handlePostHandle = async (e) => {
+    e.preventDefault();
+
+    let response = await axios.post(
+      `${API_URL}/applicationData/postHandle`,
+      { ...postVal, ...detailData },
+      {
+        withCredentials: true,
+      }
+    );
+
+    console.log('add', response.data);
+    Swal.fire({
+      icon: 'success',
+      title: '申請成功',
+    }).then(function () {
+      setNeedLoading(!needLoading);
+      setAddStateForm(false);
+      setPostVal({
+        caseNumber: '',
+        handler: '',
+        status: '',
+        transfer: '',
+        remark: '',
+        finishTime: '',
+      });
+
+      navigate(`/header`);
+    });
+  };
+
+  // post 修改需求
+  const hanleAddNeed = async (e) => {
+    e.preventDefault();
+
+    let response = await axios.post(
+      `${API_URL}/applicationData/postAddNeed`,
+      editNeed,
+      {
+        withCredentials: true,
+      }
+    );
+
+    console.log('add', response.data);
+    // Swal.fire({
+    //   icon: 'success',
+    //   title: '申請成功',
+    // }).then(function () {
+    //   setNeedLoading(!needLoading);
+    //   setAddStateForm(false);
+    //   setPostVal({
+    //     caseNumber: '',
+    //     handler: '',
+    //     status: '',
+    //     transfer: '',
+    //     remark: '',
+    //     finishTime: '',
+    //   });
+
+    //   navigate(`/header`);
+    // });
   };
 
   return (
     <div className="appFormContainer">
       {/* 處理人申請狀態btn */}
-      {addStateForm ? <AddStateForm setAddStateForm={setAddStateForm} /> : ''}
+      {addStateForm ? (
+        <AddStateForm
+          setAddStateForm={setAddStateForm}
+          handlePostVal={handlePostVal}
+          handlerSelect={handlerSelect}
+          setHandlerSelect={setHandlerSelect}
+          handlerData={handlerData}
+          setHandlerVal={setHandlerVal}
+          handlerVal={handlerVal}
+          postVal={postVal}
+          handlePostHandle={handlePostHandle}
+        />
+      ) : (
+        ''
+      )}
 
       {/* 修改表單btn */}
       {editPage ? (
@@ -95,71 +257,65 @@ function ApplicationForm({ setAddStatus, addStatus }) {
           editNeed={editNeed}
           handleDelNeed={handleDelNeed}
           handlerUpdateNeed={handlerUpdateNeed}
+          detailData={detailData}
+          needData={needData}
+          hanleAddNeed={hanleAddNeed}
         />
       ) : (
         ''
       )}
-      <div
-        className="editBtn"
-        onClick={() => {
-          setEditPage(true);
-        }}
-      >
-        請點選按鈕進行需求修改
-      </div>
+      {needState === 7 && addStatus === false ? (
+        <div
+          className="editBtn"
+          onClick={() => {
+            setEditNeed([...needData]);
+            setEditPage(true);
+          }}
+        >
+          請點選按鈕進行需求修改
+        </div>
+      ) : (
+        ''
+      )}
 
       {/* 處理狀態 */}
       <div className="statusFormContainer">
-        <div className="statusFormContain">
-          <div className="mb-1">
-            <span> &emsp;&emsp;處理人員：</span>
-            <span>林鈺珊</span>
-          </div>
-          <div className="mb-1">
-            <span>&emsp;&emsp;處理狀態：</span>
-            <span>專案進行中</span>
-          </div>
-          <div className="statusTime mb-1">
-            <span>&emsp;&emsp;處理時間：</span>
-            <span>2022/12/12 13:14</span>
-          </div>
-          <div className="d-flex mb-1">
-            <span>&emsp;&emsp;&emsp;&emsp;備註：</span>
-            <textarea
-              name=""
-              cols="40"
-              rows="3"
-              placeholder="進行中"
-              disabled
-            ></textarea>
-          </div>
-          <div>
-            <span>預計完成時間：</span>
-            <span>2022/12/12 13:14</span>
-          </div>
-        </div>
-        <div className="statusFormContain">
-          <div className="statusTime mb-1">
-            <span>&emsp;&emsp;處理時間：</span>
-            <span>2022/12/12 13:14</span>
-          </div>
-          <div className="mb-1">
-            <span> &emsp;&emsp;處理人員：</span>
-            <span>林鈺珊</span>
-          </div>
-          <div className="mb-1">
-            <span>&emsp;&emsp;申請狀態：</span>
-            <span>專案進行中</span>
-          </div>
-          <div className="d-flex mb-1">
-            <span>&emsp;&emsp;&emsp;&emsp;備註：</span>
-            <textarea name="" cols="40" rows="3"></textarea>
-          </div>
-          <div>
-            <span>專案完成時間：</span>
-            <span>2022/12/12 13:14</span>
-          </div>
-        </div>
+        {handleData.map((v) => {
+          return (
+            <div className="statusFormContain" key={uuidv4()}>
+              <div className="mb-1">
+                <span> &emsp;&emsp;處理人員：</span>
+                <span>{v.handler}</span>
+              </div>
+              <div className="mb-1">
+                <span>&emsp;&emsp;處理狀態：</span>
+                <span>{v.select_state}</span>
+              </div>
+              <div className="statusTime mb-1">
+                <span>&emsp;&emsp;處理時間：</span>
+                <span>{v.create_time}</span>
+              </div>
+              <div className="d-flex mb-1">
+                <span>&emsp;&emsp;&emsp;&emsp;備註：</span>
+                <textarea
+                  name=""
+                  cols="40"
+                  rows="3"
+                  placeholder={v.remark}
+                  disabled
+                ></textarea>
+              </div>
+              {v.select_state === '案件進行中' ? (
+                <div>
+                  <span>預計完成時間：</span>
+                  <span>{v.estimated_time}</span>
+                </div>
+              ) : (
+                ''
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {/* 申請表單 */}
@@ -220,8 +376,15 @@ function ApplicationForm({ setAddStatus, addStatus }) {
           return (
             <div className="needContain" key={uuidv4()}>
               <div className="d-flex">
-                <input type="checkbox" disabled={addStatus ? false : true} />
-                <span className="title">需求 {i}</span>
+                <input
+                  type="checkbox"
+                  disabled={addStatus ? false : true}
+                  checked={v.checked === 1 ? true : false}
+                  onChange={(e) => {
+                    handleNeedChecked(v.id, e.target.checked);
+                  }}
+                />
+                <span className="title">需求 {i + 1}</span>
               </div>
               <div className="needInput center">
                 <span className="pe-1">1.</span>
@@ -249,21 +412,51 @@ function ApplicationForm({ setAddStatus, addStatus }) {
         {/* 選擇狀態 */}
         {addStatus ? (
           <div className="selectContain">
-            <select name="">
-              <option value="0" selected>
-                --請選擇申請狀態--
-              </option>
-              <option value="1">同意申請</option>
-            </select>
+            {/* <StateFilter /> */}
+            <div className="selContain">
+              <select
+                name="status"
+                value={postVal.status}
+                onChange={(e) => {
+                  setSelectRemind(false);
+                  handlePostVal(e);
+                }}
+              >
+                <option value="" selected>
+                  ----請選擇申請狀態----
+                </option>
+                {selectData.map((v) => {
+                  return (
+                    <option value={v.name} key={uuidv4()}>
+                      {v.name}
+                    </option>
+                  );
+                })}
+              </select>
+              {selectRemind ? (
+                <div className="selectRemind">*請選擇申請狀態</div>
+              ) : (
+                ''
+              )}
+            </div>
+
             <button
               className="confirmBtn"
               onClick={() => {
+                if (postVal.status === '') {
+                  setSelectRemind(true);
+                  return;
+                }
                 setAddStateForm(true);
               }}
             >
               確認
             </button>
-            <button className="finishBtn">完成</button>
+            {needSumLen === needLen ? (
+              <button className="finishBtn">完成</button>
+            ) : (
+              ''
+            )}
           </div>
         ) : (
           ''

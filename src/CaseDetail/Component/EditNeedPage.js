@@ -10,7 +10,9 @@ function EditNeedPage({
   editNeed,
   handleDelNeed,
   handlerUpdateNeed,
+  hanleAddNeed,
 }) {
+  console.log(editNeed);
   return (
     <div className="editNeedContainer">
       <div className="editNeedContain">
@@ -54,9 +56,9 @@ function EditNeedPage({
                   <span className="pe-1">1.</span>
                   <input
                     type="text"
-                    name="title"
+                    name="tit"
                     placeholder="請輸入標題"
-                    value={v.title}
+                    value={editNeed[i].requirement_name}
                     onChange={(e) => {
                       handlerUpdateNeed(e.target.value, i, 'tit');
                     }}
@@ -65,10 +67,10 @@ function EditNeedPage({
                 <div className="needInput">
                   <span className="pe-1">2.</span>
                   <textarea
-                    name="directions"
+                    name="dir"
                     rows="3"
                     placeholder="請依據標題詳細說明"
-                    value={v.directions}
+                    value={editNeed[i].directions}
                     onChange={(e) => {
                       handlerUpdateNeed(e.target.value, i, 'dir');
                     }}
@@ -78,7 +80,9 @@ function EditNeedPage({
             );
           })}
         </div>
-        <button className="finishBtn">修改完成</button>
+        <button className="finishBtn" onClick={hanleAddNeed}>
+          修改完成
+        </button>
       </div>
     </div>
   );

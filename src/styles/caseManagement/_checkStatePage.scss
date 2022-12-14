@@ -11,8 +11,8 @@
   .close {
     position: absolute;
     top: 15%;
-    right: 17.5%;
-    background: $focusClrB;
+    right: 20%;
+    background: $focusClrG;
     z-index: 30;
     color: $mainClrW;
     padding: 6px 12px;
@@ -21,7 +21,7 @@
   }
   .checkStateContain {
     position: relative;
-    width: 55%;
+    width: 50%;
     height: 70%;
     background: $mainClrW;
     padding: 20px;

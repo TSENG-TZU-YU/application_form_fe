@@ -3,6 +3,7 @@
 // addStatePage
 .addStatePageContain {
   position: absolute;
+  z-index: 100;
   height: calc(100% - 75px);
   width: calc(100% - 40px);
   background: rgba(0, 0, 0, 0.55);
