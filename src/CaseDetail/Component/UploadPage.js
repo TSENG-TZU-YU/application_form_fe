@@ -79,10 +79,10 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
         );
 
         setForm(response.data);
-        if (
-          (member.permissions_id === 1 || member.permissions_id === 2) &&
-          addForm[0].status_id === 7
-        ) {
+        if (member.permissions_id === 1 && addForm[0].status_id === 7) {
+          setValid(1);
+          setUpload(true);
+        } else if (member.permissions_id === 2 && addForm[0].status_id === 7) {
           setValid(1);
           setUpload(true);
         }
@@ -228,6 +228,14 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
       console.log(err);
     }
   }
+
+  const fileSubmitStatus = async () => {
+    try {
+      let response=await axios.patch('')
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="overScr">
       {/* 上傳檔案 */}
