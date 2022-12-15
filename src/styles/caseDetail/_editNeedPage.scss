@@ -81,17 +81,28 @@
         }
       }
     }
-    .finishBtn {
-      @include flexCenter;
-      margin: 10px auto 0;
-      padding: 3px 8px;
-      border: 0;
-      border-radius: 5px;
-      color: $mainClrW;
-      background: $focusClrY;
-      transition: linear 0.3s;
-      &:hover {
-        box-shadow: 0.2px 0.2px 6px #8a8a8ac9;
+    .submitBtn {
+      position: relative;
+      .finishBtn {
+        @include flexCenter;
+        margin: 10px auto 0;
+        padding: 3px 8px;
+        border: 0;
+        border-radius: 5px;
+        color: $mainClrW;
+        background: $focusClrY;
+        transition: linear 0.3s;
+        &:hover {
+          box-shadow: 0.2px 0.2px 6px #8a8a8ac9;
+        }
+      }
+      .editVerify {
+        position: absolute;
+        color: $focusClrG;
+        font-size: 12px;
+        top: 50%;
+        right: 50%;
+        transform: translate(115px,-50%);
       }
     }
   }

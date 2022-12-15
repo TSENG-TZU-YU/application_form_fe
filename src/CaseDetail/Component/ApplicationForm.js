@@ -17,11 +17,11 @@ function ApplicationForm({
   handlerSelect,
   setHandlerSelect,
 }) {
+  const { num } = useParams();
   const navigate = useNavigate();
   const [editPage, setEditPage] = useState(false);
   const [addStateForm, setAddStateForm] = useState(false);
   const { member, setMember } = useAuth();
-  const { num } = useParams();
   const [needState, setNeedState] = useState('');
   const [needData, setNeedData] = useState([]);
   const [detailData, setDetailData] = useState([]);
@@ -39,6 +39,10 @@ function ApplicationForm({
   });
 
   const [selectRemind, setSelectRemind] = useState(false);
+  const [editVerifyPage, setEditVerifyPage] = useState(false);
+  // 職權
+  const [director, setDirectors] = useState(true);
+  const [handler, setHandler] = useState(true);
 
   const [needLoading, setNeedLoading] = useState(false);
   const [needLen, setNeedLen] = useState('');
@@ -69,6 +73,9 @@ function ApplicationForm({
 
     if (member.permissions_id === 1) {
       setAddStatus(false);
+    }
+    if (member.permissions_id === 3) {
+      setHandler(false);
     }
   }, []);
 
@@ -111,7 +118,7 @@ function ApplicationForm({
         }
       );
       setNeedLoading(!needLoading);
-      console.log('checked', response.data);
+      // console.log('checked', response.data);
     } else {
       let response = await axios.put(
         `${API_URL}/applicationData/unChecked/${needId}`,
@@ -120,7 +127,7 @@ function ApplicationForm({
         }
       );
       setNeedLoading(!needLoading);
-      console.log('checked', response.data);
+      // console.log('checked', response.data);
     }
   };
 
@@ -152,6 +159,7 @@ function ApplicationForm({
     if (input === 'tit') newData[i].requirement_name = val;
     if (input === 'dir') newData[i].directions = val;
     setEditNeed(newData);
+    setEditVerifyPage(false);
   };
 
   // post 處理狀態
@@ -202,32 +210,72 @@ function ApplicationForm({
   const hanleAddNeed = async (e) => {
     e.preventDefault();
 
+    for (let i = 0; i < editNeed.length; i++) {
+      if (
+        editNeed[i].requirement_name === '' ||
+        editNeed[i].directions === ''
+      ) {
+        setEditVerifyPage(true);
+        return;
+      }
+    }
+
     let response = await axios.post(
       `${API_URL}/applicationData/postAddNeed`,
-      editNeed,
+      [detailData[0].handler, editNeed],
       {
         withCredentials: true,
       }
     );
 
-    console.log('add', response.data);
-    // Swal.fire({
-    //   icon: 'success',
-    //   title: '申請成功',
-    // }).then(function () {
-    //   setNeedLoading(!needLoading);
-    //   setAddStateForm(false);
-    //   setPostVal({
-    //     caseNumber: '',
-    //     handler: '',
-    //     status: '',
-    //     transfer: '',
-    //     remark: '',
-    //     finishTime: '',
-    //   });
+    // console.log('add', response.data);
+    Swal.fire({
+      icon: 'success',
+      title: '修改成功',
+    }).then(function () {
+      setNeedLoading(!needLoading);
+      setEditPage(false);
 
-    //   navigate(`/header`);
-    // });
+      navigate(`/header`);
+    });
+  };
+
+  // put 確認接收需求
+  const handleCheckAccept = async () => {
+    let response = await axios.put(
+      `${API_URL}/applicationData/putAcceptNeed/${num}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    console.log('put', response.data);
+    Swal.fire({
+      icon: 'success',
+      title: '已確認接收',
+    }).then(function () {
+      setNeedLoading(!needLoading);
+      navigate(`/header`);
+    });
+  };
+
+  // put user取消申請
+  let handleUserCancle = async () => {
+    let response = await axios.post(
+      `${API_URL}/applicationData/cancleAcc/${detailData[0].case_number}`,
+      { user: detailData[0].user },
+      {
+        withCredentials: true,
+      }
+    );
+    // console(response.data);
+    Swal.fire({
+      icon: 'success',
+      title: '申請案件已取消',
+    }).then(function () {
+      setNeedLoading(!needLoading);
+      navigate(`/header`);
+    });
   };
 
   return (
@@ -260,11 +308,15 @@ function ApplicationForm({
           detailData={detailData}
           needData={needData}
           hanleAddNeed={hanleAddNeed}
+          editVerifyPage={editVerifyPage}
+          setEditVerifyPage={setEditVerifyPage}
         />
       ) : (
         ''
       )}
-      {needState === 7 && addStatus === false ? (
+
+      {/* user  需求修改Btn */}
+      {needState === 12 && addStatus === false ? (
         <div
           className="editBtn"
           onClick={() => {
@@ -273,6 +325,15 @@ function ApplicationForm({
           }}
         >
           請點選按鈕進行需求修改
+        </div>
+      ) : (
+        ''
+      )}
+
+      {/* handler  接收需求Btn */}
+      {needState === 13 && handler === false ? (
+        <div className="editBtn" onClick={handleCheckAccept}>
+          需求已修改完成，請點選確認接收
         </div>
       ) : (
         ''
@@ -378,7 +439,17 @@ function ApplicationForm({
               <div className="d-flex">
                 <input
                   type="checkbox"
-                  disabled={addStatus ? false : true}
+                  disabled={
+                    addStatus &&
+                    needState !== 1 &&
+                    needState !== 2 &&
+                    needState !== 3 &&
+                    needState !== 9 &&
+                    needState !== 10 &&
+                    needState !== 11
+                      ? false
+                      : true
+                  }
                   checked={v.checked === 1 ? true : false}
                   onChange={(e) => {
                     handleNeedChecked(v.id, e.target.checked);
@@ -410,7 +481,13 @@ function ApplicationForm({
         </div>
 
         {/* 選擇狀態 */}
-        {addStatus ? (
+        {addStatus &&
+        needState !== 1 &&
+        needState !== 2 &&
+        needState !== 3 &&
+        needState !== 9 &&
+        needState !== 10 &&
+        needState !== 11 ? (
           <div className="selectContain">
             {/* <StateFilter /> */}
             <div className="selContain">
@@ -458,8 +535,14 @@ function ApplicationForm({
               ''
             )}
           </div>
-        ) : (
+        ) : addStatus ? (
           ''
+        ) : (
+          <div className="cancle">
+            <button className="cancleBtn" onClick={handleUserCancle}>
+              取消申請
+            </button>
+          </div>
         )}
       </div>
     </div>

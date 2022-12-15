@@ -24,10 +24,10 @@ function CaseManagement({ caseNum, setCaseNum }) {
   const [minDateValue, setMinDateValue] = useState('');
   const [maxDate, setMaxDate] = useState('');
   const [minDate, setMinDate] = useState('');
-  const [memberId, srtMemberId] = useState('');
+  const [memberId, setMemberId] = useState('');
   const [allData, setAllData] = useState([]);
-  const [progress, setProgress] = useState([]);
   const [caseHistory, setCaseHistory] = useState([]);
+  const [nowState, setNowState] = useState('');
 
   // 檢查會員
   useEffect(() => {
@@ -52,14 +52,18 @@ function CaseManagement({ caseNum, setCaseNum }) {
       let response = await axios.get(`${API_URL}/applicationData`, {
         withCredentials: true,
       });
-      setAllData(response.data.result);
-      setProgress(response.data.progressResult);
+      // console.log(response.data.result);
+      if (member.permissions_id === 1) {
+        setAllData(response.data.result);
+      }
+      if (member.permissions_id === 3) {
+        setAllData(response.data.handlerResult);
+      }
     };
     getCampingData();
-  }, []);
+  }, [member]);
 
-  // 取得detail Id 的值
-
+  // 審查 history
   let handleCaseHistory = async (caseNum) => {
     let response = await axios.get(
       `${API_URL}/applicationData/getCaseHistory/${caseNum}`,
@@ -68,9 +72,18 @@ function CaseManagement({ caseNum, setCaseNum }) {
       }
     );
     setCaseHistory(response.data.result);
+  };
 
-    // console.log(response.data.result[0].status_id);
-    // console.log("c", response.data.selectResult.splice(4 ));
+  // put 狀態 4 -> 5
+  let handleChangeState = async (caseNum) => {
+    let response = await axios.post(
+      `${API_URL}/applicationData/changeState/${caseNum}`,
+      { handler: allData[0].handler },
+      {
+        withCredentials: true,
+      }
+    );
+    // console(response.data.result);
   };
 
   return (
@@ -176,9 +189,19 @@ function CaseManagement({ caseNum, setCaseNum }) {
                   <td className="posClick">
                     <Link to={`caseDetail/application/${v.case_number}`}>
                       <FaEye
-                        className="icons"
+                        className={`icons ${
+                          v.name === '申請中' && member.permissions_id === 3
+                            ? 'eyeBcg'
+                            : ''
+                        }`}
                         onClick={() => {
                           setCaseNum(v.case_number);
+                          if (
+                            v.name === '申請中' &&
+                            member.permissions_id === 3
+                          ) {
+                            handleChangeState(v.case_number);
+                          }
                         }}
                       />
                     </Link>

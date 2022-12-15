@@ -1,7 +1,5 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
-import { API_URL } from './utils/config';
-import axios from 'axios';
 import Header from './Header';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 

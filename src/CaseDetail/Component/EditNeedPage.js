@@ -11,6 +11,8 @@ function EditNeedPage({
   handleDelNeed,
   handlerUpdateNeed,
   hanleAddNeed,
+  editVerifyPage,
+  setEditVerifyPage,
 }) {
   console.log(editNeed);
   return (
@@ -38,7 +40,7 @@ function EditNeedPage({
           {/* 需求內容 */}
           {editNeed.map((v, i) => {
             return (
-              <div className="addNeedTable" key={uuidv4()}>
+              <div className="addNeedTable" key={i}>
                 <div>
                   <span className="needTit">需求 {1 + i}</span>
                   {i !== 0 ? (
@@ -80,9 +82,16 @@ function EditNeedPage({
             );
           })}
         </div>
-        <button className="finishBtn" onClick={hanleAddNeed}>
-          修改完成
-        </button>
+        <div className="submitBtn">
+          <button className="finishBtn" onClick={hanleAddNeed}>
+            修改完成
+          </button>
+          {editVerifyPage ? (
+            <div className="editVerify">*欄位不得為空</div>
+          ) : (
+            ''
+          )}
+        </div>
       </div>
     </div>
   );

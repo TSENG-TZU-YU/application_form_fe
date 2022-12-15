@@ -125,5 +125,13 @@
         @include submitBtn($focusClrG);
       }
     }
+    .cancle {
+      display: flex;
+      justify-content: center;
+      .cancleBtn {
+        color: $mainClrW;
+        @include submitBtn($focusClrG);
+      }
+    }
   }
 }
