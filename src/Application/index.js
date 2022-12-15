@@ -3,11 +3,13 @@ import './index.scss';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import moment from 'moment';
+import axios from 'axios';
 
 //react-icons
 import { MdOutlineAddBox } from 'react-icons/md';
 import { IoMdCloseCircle } from 'react-icons/io';
-import axios from 'axios';
+import { HiOutlineDocumentPlus } from 'react-icons/hi2';
+import { FaTrashAlt } from 'react-icons/fa';
 
 //hook
 import { useAuth } from '../utils/use_auth';
@@ -19,11 +21,10 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
   const [submitValue, setSubmitValue] = useState([
     { handler: '', category: '', name: '', cycle: '' },
   ]);
-
-  console.log('submitValue', submitValue);
+  const [addNo, setAddNo] = useState('');
 
   //使用者資料
-  const { member, setMember, isLogin, setIsLogin } = useAuth();
+  const { member } = useAuth();
 
   //抓取後端資料
   const [getHandler, setGetHandler] = useState([]);
@@ -69,20 +70,27 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
     if (newData.length === 0) return;
     setAddNeed(newData);
   };
+  // 清空檔案
+  const handleClearNeed = () => {
+    let newData = [{ title: '', text: '' }];
+    setAddNeed(newData);
+  };
 
   //增加上傳檔案
   const addF = () => {
-    const newAdd = {
-      file: '',
-    };
-    const newAdds = [...addFile, newAdd];
+    const newAdds = [...addFile, { file: '' }];
     setAddFile(newAdds);
   };
   //刪除檔案
   const deleteFile = (i) => {
     let newData = [...addFile];
-    newData.splice(i, 1);
-    if (newData.length === '') return;
+    newData.splice(i, 1); //刪除1個
+    if (newData.length === 0) return; //if長度=0 無法再刪除
+    setAddFile(newData);
+  };
+  // 清空檔案
+  const handleClearFile = () => {
+    let newData = [{ file: '' }];
     setAddFile(newData);
   };
   //單個檔案上傳
@@ -92,7 +100,6 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
 
     setAddFile(newData);
   };
-
   useEffect(() => {
     //抓取處理人
     let handler = async () => {
@@ -220,11 +227,12 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
         addNeed[0].text !== ''
       ) {
         let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
-
+        let noTime = moment(Date.now()).format('YYYYMMDD');
         const formData = new FormData();
         for (let i = 0; i < addFile.length; i++) {
           formData.append(i, addFile[i].file);
         }
+        formData.append('fileNo', addNo + '-' + noTime);
 
         formData.append('number', parseInt(Date.now() / 10000));
         formData.append('create_time', endTime);
@@ -279,6 +287,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
               className="handler"
               onChange={(e) => {
                 handleChange(e.target.value, 'category');
+                setAddNo(e.target.value);
               }}
               onClick={(e) => {
                 if (e.target.value !== '0') {
@@ -288,7 +297,11 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
             >
               <option value="0">-----請選擇類別-----</option>
               {getCategory.map((v, i) => {
-                return <option key={i}>{v.name}</option>;
+                return (
+                  <option key={i} value={v.number}>
+                    {v.name}
+                  </option>
+                );
               })}
             </select>
           </div>
@@ -337,7 +350,11 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
         </div>
         {/* 需求 */}
         <div className="add handler">
-          {/* <div>(增加列點1. 2.)</div> */}
+          <FaTrashAlt
+            size="17"
+            onClick={handleClearNeed}
+            className="clearIcon"
+          />
           <MdOutlineAddBox size="20" onClick={addN} className="addIcon" />
         </div>
         <div className="needs">
@@ -357,7 +374,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
                 </div>
 
                 <div>
-                  <div>1.</div>
+                  <div className="needInput">1.</div>
                   <input
                     className="input"
                     type="text"
@@ -373,7 +390,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
                   />
                 </div>
                 <div>
-                  <div>2.</div>
+                  <div className="needInput">2.</div>
                   <textarea
                     className="input"
                     placeholder="請依據標題詳細說明"
@@ -399,19 +416,44 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
           <div className="fileName">
             <div>
               <div>附件上傳</div>
-              <div>副檔名</div>
-              <div>(選擇新專案必須上傳RFP 文件)</div>
+              <div>(可上傳副檔名.pdf / img...)</div>
+              {/* <div>(選擇新專案必須上傳RFP 文件)</div> */}
             </div>
-            <MdOutlineAddBox size="20" onClick={addF} className="addIcon" />
+            <div className="fileIcon">
+              <FaTrashAlt
+                size="17"
+                onClick={handleClearFile}
+                className="clearIcon"
+              />
+              <MdOutlineAddBox size="20" onClick={addF} className="addIcon" />
+            </div>
           </div>
           {addFile.map((v, i) => {
             return (
               <div key={i} className="two">
+                <label className="addUploadContainer" htmlFor={`file${i}`}>
+                  {/* 數字大於10 會因大小移位 */}
+                  <span className={`items ${i < 9 ? 'ps-2' : ''}`}>
+                    {i + 1}.
+                  </span>
+                  <div className="addUploadContain">
+                    {v.file !== '' ? (
+                      v.file.name
+                    ) : (
+                      <div className="addFile">
+                        <HiOutlineDocumentPlus className="addIcon" />
+                        <span>點擊新增檔案</span>
+                      </div>
+                    )}
+                  </div>
+                </label>
+
                 <input
+                  className="input d-none"
                   type="file"
                   name="upFile"
-                  // multiple
-                  // accept=".json,.csv,.txt,.text,application/json,text/csv,pdf"
+                  id={`file${i}`}
+                  accept=".csv,.txt,.text,.png,.jpeg,.jpg,text/csv,.pdf,.xlsx"
                   onChange={(e) => {
                     onFileUpload(e.target.files[0], i, 'file');
                   }}
