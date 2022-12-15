@@ -16,6 +16,7 @@ function ApplicationForm({
   addStatus,
   handlerSelect,
   setHandlerSelect,
+  caseId,
 }) {
   const { num } = useParams();
   const navigate = useNavigate();
@@ -83,9 +84,13 @@ function ApplicationForm({
   // 取得detail Id 的值
   useEffect(() => {
     let getCampingDetailData = async () => {
-      let response = await axios.get(`${API_URL}/applicationData/${num}`, {
-        withCredentials: true,
-      });
+      let response = await axios.post(
+        `${API_URL}/applicationData/${num}`,
+        { caseId },
+        {
+          withCredentials: true,
+        }
+      );
       setDetailData(response.data.result);
       setNeedData(response.data.needResult);
       setHandleData(response.data.handleResult);
@@ -104,7 +109,7 @@ function ApplicationForm({
       setNeedLen(parseInt(response.data.needResult.length));
       setNeedSumLen(parseInt(response.data.needSum[0].checked));
       // console.log(response.data.result[0].status_id);
-      // console.log("c", response.data.selectResult.splice(4 ));
+      // console.log('c', detailData[0].transfer);
     };
 
     getCampingDetailData();
@@ -280,6 +285,44 @@ function ApplicationForm({
     });
   };
 
+  // 確認接收轉件
+  let handleAcceptCase = async () => {
+    let response = await axios.post(
+      `${API_URL}/applicationData/acceptCase`,
+      detailData,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log(response.data);
+    Swal.fire({
+      icon: 'success',
+      title: '已接收此案件',
+    }).then(function () {
+      setNeedLoading(!needLoading);
+      navigate(`/header`);
+    });
+  };
+
+  // 拒絕接收轉件
+  let handleRejectCase = async () => {
+    let response = await axios.post(
+      `${API_URL}/applicationData/rejectCase`,
+      detailData,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log(response.data);
+    Swal.fire({
+      icon: 'success',
+      title: '已拒絕接收此案件',
+    }).then(function () {
+      setNeedLoading(!needLoading);
+      navigate(`/header`);
+    });
+  };
+
   return (
     <div className="appFormContainer">
       {/* 處理人申請狀態btn */}
@@ -341,44 +384,62 @@ function ApplicationForm({
         ''
       )}
 
+      {/* handler  是否接件 */}
+      {needState === 11 &&
+      detailData[0].transfer === 1 &&
+      detailData[0].valid === 1 ? (
+        <>
+          <div className="editBtn" onClick={handleAcceptCase}>
+            是，確認接收此案件
+          </div>
+          <div className="editBtn" onClick={handleRejectCase}>
+            否，無法接收此案件
+          </div>
+        </>
+      ) : (
+        ''
+      )}
+
       {/* 處理狀態 */}
       <div className="statusFormContainer">
-        {handleData.map((v) => {
-          return (
-            <div className="statusFormContain" key={uuidv4()}>
-              <div className="mb-1">
-                <span> &emsp;&emsp;處理人員：</span>
-                <span>{v.handler}</span>
-              </div>
-              <div className="mb-1">
-                <span>&emsp;&emsp;處理狀態：</span>
-                <span>{v.select_state}</span>
-              </div>
-              <div className="statusTime mb-1">
-                <span>&emsp;&emsp;處理時間：</span>
-                <span>{v.create_time}</span>
-              </div>
-              <div className="d-flex mb-1">
-                <span>&emsp;&emsp;&emsp;&emsp;備註：</span>
-                <textarea
-                  name=""
-                  cols="40"
-                  rows="3"
-                  placeholder={v.remark}
-                  disabled
-                ></textarea>
-              </div>
-              {v.select_state === '案件進行中' ? (
-                <div>
-                  <span>預計完成時間：</span>
-                  <span>{v.estimated_time}</span>
+        {handleData.length !== 0
+          ? handleData.map((v) => {
+              return (
+                <div className="statusFormContain" key={uuidv4()}>
+                  <div className="mb-1">
+                    <span> &emsp;&emsp;處理人員：</span>
+                    <span>{v.handler}</span>
+                  </div>
+                  <div className="mb-1">
+                    <span>&emsp;&emsp;處理狀態：</span>
+                    <span>{v.select_state}</span>
+                  </div>
+                  <div className="statusTime mb-1">
+                    <span>&emsp;&emsp;處理時間：</span>
+                    <span>{v.create_time}</span>
+                  </div>
+                  <div className="d-flex mb-1">
+                    <span>&emsp;&emsp;&emsp;&emsp;備註：</span>
+                    <textarea
+                      name=""
+                      cols="40"
+                      rows="3"
+                      placeholder={v.remark}
+                      disabled
+                    ></textarea>
+                  </div>
+                  {v.select_state === '案件進行中' ? (
+                    <div>
+                      <span>預計完成時間：</span>
+                      <span>{v.estimated_time}</span>
+                    </div>
+                  ) : (
+                    ''
+                  )}
                 </div>
-              ) : (
-                ''
-              )}
-            </div>
-          );
-        })}
+              );
+            })
+          : '尚無資料'}
       </div>
 
       {/* 申請表單 */}
@@ -448,7 +509,11 @@ function ApplicationForm({
                     needState !== 3 &&
                     needState !== 9 &&
                     needState !== 10 &&
-                    needState !== 11
+                    needState !== 11 &&
+                    needState !== 12 &&
+                    needState !== 13 &&
+                    needState !== 14 &&
+                    needState !== 15
                       ? false
                       : true
                   }
@@ -491,9 +556,15 @@ function ApplicationForm({
         needState !== 1 &&
         needState !== 2 &&
         needState !== 3 &&
+        needState !== 7 &&
+        needState !== 8 &&
         needState !== 9 &&
         needState !== 10 &&
-        needState !== 11 ? (
+        needState !== 11 &&
+        needState !== 12 &&
+        needState !== 13 &&
+        needState !== 14 &&
+        needState !== 15 ? (
           <div className="selectContain">
             {/* <StateFilter /> */}
             <div className="selContain">

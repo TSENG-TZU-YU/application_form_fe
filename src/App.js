@@ -23,6 +23,7 @@ function App() {
   const [addStatus, setAddStatus] = useState(true);
   const [handlerSelect, setHandlerSelect] = useState(true);
   const [caseNum, setCaseNum] = useState('');
+  const [caseId, setCaseId] = useState('');
 
   // console.log('application', application);
   // console.log('caseManagement', caseManagement);
@@ -46,7 +47,12 @@ function App() {
               />
             }
           >
-            <Route index element={<CaseManagement setCaseNum={setCaseNum} />} />
+            <Route
+              index
+              element={
+                <CaseManagement setCaseNum={setCaseNum} setCaseId={setCaseId} />
+              }
+            />
             <Route
               path="application"
               element={
@@ -69,6 +75,7 @@ function App() {
                     caseNum={caseNum}
                     handlerSelect={handlerSelect}
                     setHandlerSelect={setHandlerSelect}
+                    caseId={caseId}
                   />
                 }
               />

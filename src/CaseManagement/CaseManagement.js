@@ -14,7 +14,7 @@ import CheckStatePage from './Component/CheckStatePage.js';
 import { FaEye } from 'react-icons/fa';
 import { MdArrowDropUp, MdArrowDropDown } from 'react-icons/md';
 
-function CaseManagement({ caseNum, setCaseNum }) {
+function CaseManagement({ setCaseNum, setCaseId }) {
   const { member, setMember } = useAuth();
   const [number, setNumber] = useState(true);
   const [time, setTime] = useState(true);
@@ -75,10 +75,10 @@ function CaseManagement({ caseNum, setCaseNum }) {
   };
 
   // put 狀態 4 -> 5
-  let handleChangeState = async (caseNum) => {
+  let handleChangeState = async (caseNum, caseId) => {
     let response = await axios.post(
       `${API_URL}/applicationData/changeState/${caseNum}`,
-      { handler: allData[0].handler },
+      { handler: allData[0].handler, id: caseId },
       {
         withCredentials: true,
       }
@@ -171,7 +171,11 @@ function CaseManagement({ caseNum, setCaseNum }) {
             return (
               <tbody key={uuidv4()}>
                 <tr>
-                  <td>轉件人:林鈺珊</td>
+                  <td>
+                    {v.valid === 1 && v.transfer === 1
+                      ? `轉件人:${v.sender}`
+                      : ''}
+                  </td>
                   <td>{v.case_number}</td>
                   <td>{v.applicant_unit}</td>
                   <td>{v.user}</td>
@@ -196,11 +200,12 @@ function CaseManagement({ caseNum, setCaseNum }) {
                         }`}
                         onClick={() => {
                           setCaseNum(v.case_number);
+                          setCaseId(v.id);
                           if (
                             v.name === '申請中' &&
                             member.permissions_id === 3
                           ) {
-                            handleChangeState(v.case_number);
+                            handleChangeState(v.case_number, v.id);
                           }
                         }}
                       />
