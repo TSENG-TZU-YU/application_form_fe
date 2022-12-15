@@ -57,6 +57,8 @@ function ApplicationForm({
     { title: '長期', value: '3' },
   ];
 
+  console.log('selectData', selectData);
+
   // 檢查會員
   useEffect(() => {
     async function getMember() {
