@@ -19,8 +19,13 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
   const [getUserTotalFile, setGetUserTotalFile] = useState([]);
   const [getHandlerTotalFile, setGetHandlerTotalFile] = useState([]);
   const [render, setRender] = useState(false);
-  const [addNo, setAddNo] = useState([]);
-  console.log('addNo', addNo);
+  const [addForm, setForm] = useState([]);
+  const [valid, setValid] = useState('');
+  const [upLoad, setUpload] = useState(false);
+
+  console.log('upLoad', upLoad);
+  console.log('addForm', addForm);
+
   useEffect(() => {
     async function getMember() {
       try {
@@ -35,6 +40,11 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
       }
     }
     getMember();
+
+    if (member.permissions_id === 3 || member.permissions_id === 4) {
+      setValid(2);
+      setUpload(true);
+    }
 
     if (member.permissions_id === 1) {
       setAddStatus(false);
@@ -67,15 +77,24 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
         let response = await axios.get(
           `http://localhost:3001/api/files/getHandlerFileNo/${caseNum}`
         );
-        setAddNo(response.data);
+
+        setForm(response.data);
+        if (
+          (member.permissions_id === 1 || member.permissions_id === 2) &&
+          addForm[0].status_id === 7
+        ) {
+          setValid(1);
+          setUpload(true);
+        }
       } catch (err) {
         console.log(err);
       }
     }
+
     toGetUserFile();
     toGetHandlerFile();
     toGetHandlerFileNo();
-  }, [render]);
+  }, [render, upLoad]);
 
   // function getFileNameFromContentDisposition(contentDisposition) {
   //   if (!contentDisposition) return null;
@@ -88,6 +107,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
   // useEffect(()=>{
 
   // },[ fileName])
+
   const handleDownload = async (fileName) => {
     await axios({
       url: 'http://localhost:3001/api/files',
@@ -178,8 +198,9 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
         formData.append(i, filesData[i].fileName);
       }
       formData.append('fileNo', '-' + noTime);
-      formData.append('No', addNo[0].application_category);
+      formData.append('No', addForm[0].application_category);
 
+      formData.append('valid', valid);
       formData.append('number', parseInt(Date.now() / 10000));
       formData.append('create_time', endTime);
       let response = await axios.post(
@@ -210,74 +231,80 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
   return (
     <div className="overScr">
       {/* 上傳檔案 */}
-      <>
-        <div className="addUpload">
-          <div className="addTitle">
-            請新增上傳附件(可上傳副檔名.pdf / img...)
-          </div>
-          <div>
-            <FaTrashAlt className="trashIcon" onClick={handleClearFile} />
-            <MdOutlineAddBox className="addIcon" onClick={handleAddFile} />
-          </div>
-        </div>
-        <div className="uploadContainer">
-          {filesData.map((v, i) => {
-            return (
-              <div key={uuidv4()}>
-                <div className="upload">
-                  <label className="addUploadContainer" htmlFor={`file${i}`}>
-                    <span className={`items ${i < 9 ? 'ps-2' : ''}`}>
-                      {i + 1}.
-                    </span>
-                    <div className="addUploadContain">
-                      {v.fileName !== '' ? (
-                        v.fileName.name
-                      ) : (
-                        <div className="addFile">
-                          <HiOutlineDocumentPlus className="addIcon" />
-                          <span>點擊新增檔案</span>
-                        </div>
-                      )}
-                    </div>
-                  </label>
-                  {i !== 0 ? (
-                    <AiFillCloseCircle
-                      className="delIcon"
-                      onClick={() => {
-                        handleDelFile(i);
-                      }}
-                    />
-                  ) : (
-                    ''
-                  )}
-                </div>
 
-                <input
-                  className="input d-none"
-                  name="photo1"
-                  type="file"
-                  id={`file${i}`}
-                  accept=".csv,.txt,.text,.png,.jpeg,.jpg,text/csv,.pdf,.xlsx"
-                  onChange={(e) => {
-                    handlerUpdateFile(e.target.files[0], i, 'photo1');
-                  }}
-                />
-              </div>
-            );
-          })}
-        </div>
-        <div className="subBtn">
-          <button
-            className="submitBtn"
-            onClick={() => {
-              setRender(true);
-              fileSubmit();
-            }}
-          >
-            上傳檔案
-          </button>
-        </div>
-      </>
+      {upLoad ? (
+        <>
+          {' '}
+          <div className="addUpload">
+            <div className="addTitle">
+              請新增上傳附件(可上傳副檔名.pdf / img...)
+            </div>
+            <div>
+              <FaTrashAlt className="trashIcon" onClick={handleClearFile} />
+              <MdOutlineAddBox className="addIcon" onClick={handleAddFile} />
+            </div>
+          </div>
+          <div className="uploadContainer">
+            {filesData.map((v, i) => {
+              return (
+                <div key={uuidv4()}>
+                  <div className="upload">
+                    <label className="addUploadContainer" htmlFor={`file${i}`}>
+                      <span className={`items ${i < 9 ? 'ps-2' : ''}`}>
+                        {i + 1}.
+                      </span>
+                      <div className="addUploadContain">
+                        {v.fileName !== '' ? (
+                          v.fileName.name
+                        ) : (
+                          <div className="addFile">
+                            <HiOutlineDocumentPlus className="addIcon" />
+                            <span>點擊新增檔案</span>
+                          </div>
+                        )}
+                      </div>
+                    </label>
+                    {i !== 0 ? (
+                      <AiFillCloseCircle
+                        className="delIcon"
+                        onClick={() => {
+                          handleDelFile(i);
+                        }}
+                      />
+                    ) : (
+                      ''
+                    )}
+                  </div>
+
+                  <input
+                    className="input d-none"
+                    name="photo1"
+                    type="file"
+                    id={`file${i}`}
+                    accept=".csv,.txt,.text,.png,.jpeg,.jpg,text/csv,.pdf,.xlsx"
+                    onChange={(e) => {
+                      handlerUpdateFile(e.target.files[0], i, 'photo1');
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          <div className="subBtn">
+            <button
+              className="submitBtn"
+              onClick={() => {
+                setRender(true);
+                fileSubmit();
+              }}
+            >
+              上傳檔案
+            </button>
+          </div>
+        </>
+      ) : (
+        ''
+      )}
 
       {/* 管理者接收檔案 */}
       {addStatus ? (
