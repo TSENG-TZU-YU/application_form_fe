@@ -56,6 +56,8 @@ function ApplicationForm({
     { title: '長期', value: '3' },
   ];
 
+  console.log('selectData', selectData);
+
   // 檢查會員
   useEffect(() => {
     async function getMember() {
@@ -487,69 +489,71 @@ function ApplicationForm({
         })}
 
         {/* 選擇狀態 */}
-        {addStatus &&
-        needState !== 1 &&
-        needState !== 2 &&
-        needState !== 3 &&
-        needState !== 9 &&
-        needState !== 10 &&
-        needState !== 11 ? (
-          <div className="selectContain">
-            {/* <StateFilter /> */}
-            <div className="selContain">
-              <select
-                name="status"
-                value={postVal.status}
-                onChange={(e) => {
-                  setSelectRemind(false);
-                  handlePostVal(e);
+        {
+          /* addStatus && */
+          needState !== 1 &&
+          needState !== 2 &&
+          needState !== 3 &&
+          needState !== 9 &&
+          needState !== 10 &&
+          needState !== 11 ? (
+            <div className="selectContain">
+              {/* <StateFilter /> */}
+              <div className="selContain">
+                <select
+                  name="status"
+                  value={postVal.status}
+                  onChange={(e) => {
+                    setSelectRemind(false);
+                    handlePostVal(e);
+                  }}
+                >
+                  <option value="" selected>
+                    ----請選擇申請狀態----
+                  </option>
+                  {selectData.map((v) => {
+                    return (
+                      <option value={v.name} key={uuidv4()}>
+                        {v.name}
+                      </option>
+                    );
+                  })}
+                </select>
+                {selectRemind ? (
+                  <div className="selectRemind">*請選擇申請狀態</div>
+                ) : (
+                  ''
+                )}
+              </div>
+
+              <button
+                className="confirmBtn"
+                onClick={() => {
+                  if (postVal.status === '') {
+                    setSelectRemind(true);
+                    return;
+                  }
+                  setAddStateForm(true);
                 }}
               >
-                <option value="" selected>
-                  ----請選擇申請狀態----
-                </option>
-                {selectData.map((v) => {
-                  return (
-                    <option value={v.name} key={uuidv4()}>
-                      {v.name}
-                    </option>
-                  );
-                })}
-              </select>
-              {selectRemind ? (
-                <div className="selectRemind">*請選擇申請狀態</div>
+                確認
+              </button>
+              {needSumLen === needLen ? (
+                <button className="finishBtn">完成</button>
               ) : (
                 ''
               )}
             </div>
-
-            <button
-              className="confirmBtn"
-              onClick={() => {
-                if (postVal.status === '') {
-                  setSelectRemind(true);
-                  return;
-                }
-                setAddStateForm(true);
-              }}
-            >
-              確認
-            </button>
-            {needSumLen === needLen ? (
-              <button className="finishBtn">完成</button>
-            ) : (
-              ''
-            )}
-          </div>
-        ) : addStatus ? (
-          ''
-        ) : (
-          <div className="cancle">
-            <button className="cancleBtn" onClick={handleUserCancle}>
-              取消申請
-            </button>
-          </div>
-        )}
+          ) : addStatus ? (
+            ''
+          ) : (
+            <div className="cancle">
+              <button className="cancleBtn" onClick={handleUserCancle}>
+                取消申請
+              </button>
+            </div>
+          )
+        }
       </div>
     </div>
   );

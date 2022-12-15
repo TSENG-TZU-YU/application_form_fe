@@ -19,13 +19,12 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
   const [getUserTotalFile, setGetUserTotalFile] = useState([]);
   const [getHandlerTotalFile, setGetHandlerTotalFile] = useState([]);
   const [render, setRender] = useState(false);
-  const [addForm, setForm] = useState([]);
+  const [No, setNo] = useState([]);
+  const [status, setStatus] = useState([]);
   const [valid, setValid] = useState('');
-  const [upLoad, setUpload] = useState(false);
-
-  console.log('upLoad', upLoad);
-  console.log('addForm', addForm);
-
+  const [getUpdateFile, setGetUpdateFile] = useState([]);
+  const [accepltRender, setAcceptRender] = useState(false);
+  console.log('status', status);
   useEffect(() => {
     async function getMember() {
       try {
@@ -41,13 +40,12 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
     }
     getMember();
 
-    if (member.permissions_id === 3 || member.permissions_id === 4) {
-      setValid(2);
-      setUpload(true);
-    }
-
     if (member.permissions_id === 1) {
       setAddStatus(false);
+      setValid(1);
+    }
+    if (member.permissions_id === 3 || member.permissions_id === 4) {
+      setValid(2);
     }
   }, []);
 
@@ -78,14 +76,18 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
           `http://localhost:3001/api/files/getHandlerFileNo/${caseNum}`
         );
 
-        setForm(response.data);
-        if (member.permissions_id === 1 && addForm[0].status_id === 7) {
-          setValid(1);
-          setUpload(true);
-        } else if (member.permissions_id === 2 && addForm[0].status_id === 7) {
-          setValid(1);
-          setUpload(true);
-        }
+        setNo(response.data[0].application_category);
+        setStatus(response.data[0].status_id);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    async function toGetUpdateFile() {
+      try {
+        let response = await axios.get(
+          ` http://localhost:3001/api/files/getUpdateFile/${caseNum}`
+        );
+        setGetUpdateFile(response.data);
       } catch (err) {
         console.log(err);
       }
@@ -94,7 +96,8 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
     toGetUserFile();
     toGetHandlerFile();
     toGetHandlerFileNo();
-  }, [render, upLoad]);
+    toGetUpdateFile();
+  }, [render, accepltRender]);
 
   // function getFileNameFromContentDisposition(contentDisposition) {
   //   if (!contentDisposition) return null;
@@ -158,14 +161,30 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
     }, [])
     .sort((a, b) => new Date(b.name) - new Date(a.name));
 
+  //整理檔案資料 已補件
+  const map2 = {};
+  const newGetUpdateFile = getUpdateFile
+    .reduce((acc, cur) => {
+      const { create_time, file_no, name, remark } = cur;
+      const item = { file_no, name };
+      if (!map2[create_time]) {
+        map2[create_time] = { create_time, remark, item: [item] };
+        acc = [...acc, map2[create_time]];
+      } else {
+        map2[create_time].item.push({ file_no, name });
+      }
+      return acc;
+    }, [])
+    .sort((a, b) => new Date(b.name) - new Date(a.name));
+
+  console.log('newGetUpdateFile', newGetUpdateFile);
+
   //   files upload
   //   update contain
   const handlerUpdateFile = (val, i, input) => {
     let newData = [...filesData];
     if (input === 'photo1') newData[i].fileName = val;
     setFilesData(newData);
-    // console.log(e.target.files[0].name);
-    // console.log(i);
   };
 
   // add files
@@ -190,7 +209,8 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
   };
   async function fileSubmit() {
     try {
-      // if (!filesData=== '') {
+      //TODO:驗鎮是否有檔案在 無檔案不能上傳
+      // if (filesData.fileName !== '') {
       let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
       let noTime = moment(Date.now()).format('YYYYMMDD');
       const formData = new FormData();
@@ -198,7 +218,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
         formData.append(i, filesData[i].fileName);
       }
       formData.append('fileNo', '-' + noTime);
-      formData.append('No', addForm[0].application_category);
+      formData.append('No', No);
 
       formData.append('valid', valid);
       formData.append('number', parseInt(Date.now() / 10000));
@@ -231,7 +251,26 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
 
   const fileSubmitStatus = async () => {
     try {
-      let response=await axios.patch('')
+      let response = await axios.patch(
+        `http://localhost:3001/api/files/patchStatus/${caseNum}`
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const toAcceptFile = async (time) => {
+    let receiveTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+    try {
+      let response = await axios.patch(
+        `http://localhost:3001/api/files/acceptFile/${caseNum}`,
+        { receiveTime: receiveTime, create_time: time }
+      );
+      Swal.fire({
+        icon: 'success',
+        title: '成功接收檔案',
+      });
+      setAcceptRender(false);
     } catch (err) {
       console.log(err);
     }
@@ -240,9 +279,10 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
     <div className="overScr">
       {/* 上傳檔案 */}
 
-      {upLoad ? (
+      {(member.permissions_id === 1 && status === 7) ||
+      member.permissions_id === 3 ||
+      member.permissions_id === 4 ? (
         <>
-          {' '}
           <div className="addUpload">
             <div className="addTitle">
               請新增上傳附件(可上傳副檔名.pdf / img...)
@@ -304,6 +344,9 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
               onClick={() => {
                 setRender(true);
                 fileSubmit();
+                if (member.permissions_id === 1) {
+                  fileSubmitStatus();
+                }
               }}
             >
               上傳檔案
@@ -315,57 +358,51 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
       )}
 
       {/* 管理者接收檔案 */}
-      {addStatus ? (
+      {(member.permissions_id === 3 || member.permissions_id === 4) &&
+      status === 8 ? (
         <>
-          <div className="receiveFileContainer">
-            <div className="receiveFileTime">2022/12/12 13:21 已上傳文件:</div>
-            <textarea
-              name=""
-              className="textContain"
-              //   cols="87"
-              rows="30"
-            ></textarea>
-            <div className="files">
-              <div className="receiveFile">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
+          {newGetUpdateFile.map((v, i) => {
+            return (
+              <div key={i}>
+                <div className="receiveFileContainer">
+                  <div className="receiveFileTime">
+                    {v.create_time} 已上傳文件:
+                  </div>
+                  <textarea
+                    name=""
+                    className="textContain"
+                    //   cols="87"
+                    rows="30"
+                    readOnly
+                  >
+                    {v.remark}
+                  </textarea>
+                  <div className="files">
+                    {newGetUpdateFile[i].item.map((v, i) => {
+                      return (
+                        <div key={uuidv4()} className="receiveFile">
+                          <span>{i + 1}.</span>
+                          <span className="ms-1 me-2">{v.file_no}</span>
+                          <span>{v.name}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="subBtn receiveBtn">
+                  <button
+                    className="submitBtn"
+                    onClick={() => {
+                      toAcceptFile(v.create_time);
+                      setAcceptRender(true);
+                    }}
+                  >
+                    接收檔案
+                  </button>
+                </div>
               </div>
-              <div className="receiveFile">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-              <div className="receiveFile">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-              <div className="receiveFile">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-              <div className="receiveFile">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-              <div className="receiveFile">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-              <div className="receiveFile">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-            </div>
-          </div>
-          <div className="subBtn receiveBtn">
-            <button className="submitBtn">接收檔案</button>
-          </div>
+            );
+          })}
         </>
       ) : (
         ''
