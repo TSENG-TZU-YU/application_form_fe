@@ -5,7 +5,8 @@ import { MdOutlineAddBox } from 'react-icons/md';
 import { HiOutlineDocumentPlus } from 'react-icons/hi2';
 import { FaTrashAlt } from 'react-icons/fa';
 import { AiFillCloseCircle } from 'react-icons/ai';
-import FileDownload from 'react-file-download';
+import moment from 'moment';
+import Swal from 'sweetalert2';
 
 import '../../styles/caseDetail/_uploadPage.scss';
 import { useAuth } from '../../utils/use_auth';
@@ -16,7 +17,10 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
   const [filesData, setFilesData] = useState([{ fileName: '' }]);
   const { member, setMember } = useAuth();
   const [getUserTotalFile, setGetUserTotalFile] = useState([]);
-
+  const [getHandlerTotalFile, setGetHandlerTotalFile] = useState([]);
+  const [render, setRender] = useState(false);
+  const [addNo, setAddNo] = useState([]);
+  console.log('addNo', addNo);
   useEffect(() => {
     async function getMember() {
       try {
@@ -24,7 +28,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
         let response = await axios.get(`http://localhost:3001/api/login/auth`, {
           withCredentials: true,
         });
-        // console.log(response.data);
+
         setMember(response.data);
       } catch (err) {
         console.log(err.response.data.message);
@@ -44,13 +48,34 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
           `http://localhost:3001/api/files/getUserFile/${caseNum}`
         );
         setGetUserTotalFile(response.data);
-        // setGetUserFile(response.data.getUserFile);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    async function toGetHandlerFile() {
+      try {
+        let response = await axios.get(
+          `http://localhost:3001/api/files/getHandlerFile/${caseNum}`
+        );
+        setGetHandlerTotalFile(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    async function toGetHandlerFileNo() {
+      try {
+        let response = await axios.get(
+          `http://localhost:3001/api/files/getHandlerFileNo/${caseNum}`
+        );
+        setAddNo(response.data);
       } catch (err) {
         console.log(err);
       }
     }
     toGetUserFile();
-  }, []);
+    toGetHandlerFile();
+    toGetHandlerFileNo();
+  }, [render]);
 
   // function getFileNameFromContentDisposition(contentDisposition) {
   //   if (!contentDisposition) return null;
@@ -72,13 +97,6 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
       method: 'POST',
       responseType: 'blob', // important 下載檔案需要轉
     }).then((response) => {
-      // const actualFileName = getFileNameFromContentDisposition(
-      //   response.headers['content-disposition']
-      // );
-      // console.log(
-      //   '11111',
-      //   decodeURIComponent(response.headers['content-disposition'])
-      // );
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -88,7 +106,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
     });
   };
 
-  //整理檔案資料
+  //整理檔案資料 user
   const map = {};
   const newGetUserFile = getUserTotalFile
     .reduce((acc, cur) => {
@@ -100,17 +118,31 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
       } else {
         map[create_time].item.push({ file_no, name });
       }
-      // console.log('item', item);
+      return acc;
+    }, [])
+    .sort((a, b) => new Date(b.name) - new Date(a.name));
+
+  //整理檔案資料 handler
+  const map1 = {};
+  const newGetHandlerFile = getHandlerTotalFile
+    .reduce((acc, cur) => {
+      const { create_time, file_no, name } = cur;
+      const item = { file_no, name };
+      if (!map1[create_time]) {
+        map1[create_time] = { create_time, item: [item] };
+        acc = [...acc, map1[create_time]];
+      } else {
+        map1[create_time].item.push({ file_no, name });
+      }
       return acc;
     }, [])
     .sort((a, b) => new Date(b.name) - new Date(a.name));
 
   //   files upload
   //   update contain
-  const handlerUpdateFile = (e, i) => {
-    let name = e.target.files[0].name;
+  const handlerUpdateFile = (val, i, input) => {
     let newData = [...filesData];
-    filesData[i].fileName = name;
+    if (input === 'photo1') newData[i].fileName = val;
     setFilesData(newData);
     // console.log(e.target.files[0].name);
     // console.log(i);
@@ -136,6 +168,45 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
     setFilesData(newData);
     // console.log(i);
   };
+  async function fileSubmit() {
+    try {
+      // if (!filesData=== '') {
+      let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+      let noTime = moment(Date.now()).format('YYYYMMDD');
+      const formData = new FormData();
+      for (let i = 0; i < filesData.length; i++) {
+        formData.append(i, filesData[i].fileName);
+      }
+      formData.append('fileNo', '-' + noTime);
+      formData.append('No', addNo[0].application_category);
+
+      formData.append('number', parseInt(Date.now() / 10000));
+      formData.append('create_time', endTime);
+      let response = await axios.post(
+        `http://localhost:3001/api/1.0/applicationData/postHandleFile/${caseNum}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      Swal.fire({
+        icon: 'success',
+        title: '已上傳檔案',
+      });
+      setFilesData([{ fileName: '' }]);
+      setRender(false);
+      // } else {
+      //   Swal.fire({
+      //     icon: 'error',
+      //     title: '無檔案',
+      //   });
+      // }
+    } catch (err) {
+      console.log(err);
+    }
+  }
   return (
     <div className="overScr">
       {/* 上傳檔案 */}
@@ -160,7 +231,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
                     </span>
                     <div className="addUploadContain">
                       {v.fileName !== '' ? (
-                        v.fileName
+                        v.fileName.name
                       ) : (
                         <div className="addFile">
                           <HiOutlineDocumentPlus className="addIcon" />
@@ -186,8 +257,9 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
                   name="photo1"
                   type="file"
                   id={`file${i}`}
+                  accept=".csv,.txt,.text,.png,.jpeg,.jpg,text/csv,.pdf,.xlsx"
                   onChange={(e) => {
-                    handlerUpdateFile(e, i);
+                    handlerUpdateFile(e.target.files[0], i, 'photo1');
                   }}
                 />
               </div>
@@ -195,7 +267,15 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
           })}
         </div>
         <div className="subBtn">
-          <button className="submitBtn">上傳檔案</button>
+          <button
+            className="submitBtn"
+            onClick={() => {
+              setRender(true);
+              fileSubmit();
+            }}
+          >
+            上傳檔案
+          </button>
         </div>
       </>
 
@@ -289,19 +369,17 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
           <div className="viewFilesContain">
             {newGetUserFile.map((v, i) => {
               return (
-                <div key={i} className="pt-2">
+                <div key={uuidv4()} className="pt-2">
                   <span className="filesTime">
                     {v.create_time} (處理人接收時間 : 2022/12/13 12:12)
                   </span>
                   {newGetUserFile[i].item.map((v, i) => {
                     return (
-                      <div key={i} className="pt-2">
+                      <div key={uuidv4()} className="pt-2">
                         <span>{i + 1}.</span>
-                        <span className="ms-1 me-2">
-                          {v.file_no}
-                          {i}
-                        </span>
+                        <span className="ms-1 me-2">{v.file_no}</span>
                         <span
+                          className="download"
                           onClick={() => {
                             handleDownload(v.name);
                           }}
@@ -314,77 +392,32 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
                 </div>
               );
             })}
-
-            {/* <div className="pt-2">
-              <span className="filesTime">
-                2022/12/12 13:14 (處理人接收時間 : 2022/12/13 12:12)
-              </span>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-            </div> */}
           </div>
         ) : (
           <div className="viewFilesContain">
-            <div className="pt-2">
-              <span className="filesTime">2022/12/12 13:14</span>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-            </div>
-            <div className="pt-2">
-              <span className="filesTime">2022/12/12 13:14</span>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-            </div>
-            <div className="pt-2">
-              <span className="filesTime">2022/12/12 13:14</span>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-            </div>
-            <div className="pt-2">
-              <span className="filesTime">2022/12/12 13:14</span>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-              <div className="pt-2">
-                <span>1.</span>
-                <span className="ms-1 me-2">NPB-11111291330-001</span>
-                <span>陽信銀行客訴管理系統_邀標規格書.pdf</span>
-              </div>
-            </div>
+            {newGetHandlerFile.map((v, i) => {
+              return (
+                <div key={uuidv4()} className="pt-2">
+                  <span className="filesTime">{v.create_time}</span>
+                  {newGetHandlerFile[i].item.map((v, i) => {
+                    return (
+                      <div key={uuidv4()} className="pt-2">
+                        <span>{i + 1}.</span>
+                        <span className="ms-1 me-2">{v.file_no}</span>
+                        <span
+                          className="download"
+                          onClick={() => {
+                            handleDownload(v.name);
+                          }}
+                        >
+                          {v.name}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

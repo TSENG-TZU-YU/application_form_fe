@@ -45,6 +45,7 @@ function ApplicationForm({
   const [needSumLen, setNeedSumLen] = useState('');
 
   const [editNeed, setEditNeed] = useState([]);
+  const [getFile, setGetFile] = useState([]);
   const radioInput = [
     { title: '一次性', value: '1' },
     { title: '短期', value: '2' },
@@ -82,6 +83,7 @@ function ApplicationForm({
       setNeedData(response.data.needResult);
       setHandleData(response.data.handleResult);
       setHandlerData(response.data.handlerResult);
+      setGetFile(response.data.getFile);
 
       // selectStatus filter
       if (member.permissions_id === 2) {
@@ -404,10 +406,14 @@ function ApplicationForm({
         })}
 
         {/* 檔案 */}
-        <div className="needFile">
-          <span>1.</span>
-          <div className="files">1110321幹部配置表.pdf</div>
-        </div>
+        {getFile.map((v, i) => {
+          return (
+            <div key={uuidv4()} className={`needFile ${i < 9 ? 'ps-2' : ''}`}>
+              <span>{i + 1}.</span>
+              <div className="files">{v.name}</div>
+            </div>
+          );
+        })}
 
         {/* 選擇狀態 */}
         {addStatus ? (
