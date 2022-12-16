@@ -57,7 +57,7 @@ function ApplicationForm({
     { title: '長期', value: '3' },
   ];
 
-  console.log('selectData', selectData);
+  // console.log('selectData', selectData);
 
   // 檢查會員
   useEffect(() => {
@@ -171,7 +171,7 @@ function ApplicationForm({
     setEditVerifyPage(false);
   };
 
-  // post 處理狀態
+  // post 處理狀態 select value
   const handlePostVal = (e) => {
     let val = {
       ...postVal,
@@ -195,7 +195,7 @@ function ApplicationForm({
       }
     );
 
-    console.log('add', response.data);
+    // console.log('add', response.data);
     Swal.fire({
       icon: 'success',
       title: '申請成功',
@@ -219,6 +219,7 @@ function ApplicationForm({
   const hanleAddNeed = async (e) => {
     e.preventDefault();
 
+    // if = "" reture
     for (let i = 0; i < editNeed.length; i++) {
       if (
         editNeed[i].requirement_name === '' ||
