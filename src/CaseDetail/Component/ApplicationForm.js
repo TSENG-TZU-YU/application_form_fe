@@ -115,7 +115,7 @@ function ApplicationForm({
     };
 
     getCampingDetailData();
-  }, [num, needLoading]);
+  }, [num, needLoading, needState]);
 
   // 需求 checked
   const handleNeedChecked = async (needId, checked) => {
@@ -403,46 +403,48 @@ function ApplicationForm({
       )}
 
       {/* 處理狀態 */}
-      <div className="statusFormContainer">
-        {handleData.length !== 0
-          ? handleData.map((v) => {
-              return (
-                <div className="statusFormContain" key={uuidv4()}>
-                  <div className="mb-1">
-                    <span> &emsp;&emsp;處理人員：</span>
-                    <span>{v.handler}</span>
-                  </div>
-                  <div className="mb-1">
-                    <span>&emsp;&emsp;處理狀態：</span>
-                    <span>{v.select_state}</span>
-                  </div>
-                  <div className="statusTime mb-1">
-                    <span>&emsp;&emsp;處理時間：</span>
-                    <span>{v.create_time}</span>
-                  </div>
-                  <div className="d-flex mb-1">
-                    <span>&emsp;&emsp;&emsp;&emsp;備註：</span>
-                    <textarea
-                      name=""
-                      cols="40"
-                      rows="3"
-                      placeholder={v.remark}
-                      disabled
-                    ></textarea>
-                  </div>
-                  {v.select_state === '案件進行中' ? (
-                    <div>
-                      <span>預計完成時間：</span>
-                      <span>{v.estimated_time}</span>
-                    </div>
-                  ) : (
-                    ''
-                  )}
+      {handleData.length !== 0 ? (
+        <div className="statusFormContainer">
+          {handleData.map((v) => {
+            return (
+              <div className="statusFormContain" key={uuidv4()}>
+                <div className="mb-1">
+                  <span> &emsp;&emsp;處理人員：</span>
+                  <span>{v.handler}</span>
                 </div>
-              );
-            })
-          : '尚無資料'}
-      </div>
+                <div className="mb-1">
+                  <span>&emsp;&emsp;處理狀態：</span>
+                  <span>{v.select_state}</span>
+                </div>
+                <div className="statusTime mb-1">
+                  <span>&emsp;&emsp;處理時間：</span>
+                  <span>{v.create_time}</span>
+                </div>
+                <div className="d-flex mb-1">
+                  <span>&emsp;&emsp;&emsp;&emsp;備註：</span>
+                  <textarea
+                    name=""
+                    cols="40"
+                    rows="3"
+                    placeholder={v.remark}
+                    disabled
+                  ></textarea>
+                </div>
+                {v.select_state === '案件進行中' ? (
+                  <div>
+                    <span>預計完成時間：</span>
+                    <span>{v.estimated_time}</span>
+                  </div>
+                ) : (
+                  ''
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="editBtn">尚無狀態資料</div>
+      )}
 
       {/* 申請表單 */}
       <div className="tableContainer">
@@ -617,11 +619,23 @@ function ApplicationForm({
         ) : addStatus ? (
           ''
         ) : (
-          <div className="cancle">
-            <button className="cancleBtn" onClick={handleUserCancle}>
-              取消申請
-            </button>
-          </div>
+          <>
+            {addStatus &&
+            needState !== 3 &&
+            needState !== 6 &&
+            needState !== 9 &&
+            needState !== 10 &&
+            needState !== 11 &&
+            needState !== 16 ? (
+              <div className="cancle">
+                <button className="cancleBtn" onClick={handleUserCancle}>
+                  取消申請
+                </button>
+              </div>
+            ) : (
+              ''
+            )}
+          </>
         )}
       </div>
     </div>

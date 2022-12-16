@@ -138,7 +138,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
     category();
     cycle();
   }, []);
-
+  
   //送出表單內容
   async function submit() {
     try {
@@ -233,7 +233,7 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
           formData.append(i, addFile[i].file);
         }
         formData.append('fileNo', addNo + '-' + noTime);
-
+   
         formData.append('number', parseInt(Date.now() / 10000));
         formData.append('create_time', endTime);
         let response = await axios.post(
