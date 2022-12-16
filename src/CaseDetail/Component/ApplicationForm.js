@@ -654,7 +654,8 @@ function ApplicationForm({
           ''
         ) : (
           <>
-            {addStatus &&
+          {/* 不是處理人 !addStatus*/}
+            {!addStatus &&
             needState !== 3 &&
             needState !== 6 &&
             needState !== 9 &&
