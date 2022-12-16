@@ -21,9 +21,10 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
   const [render, setRender] = useState(false);
   const [No, setNo] = useState([]);
   const [status, setStatus] = useState([]);
+  const [handler, setHandler] = useState([]);
   const [valid, setValid] = useState('');
   const [getUpdateFile, setGetUpdateFile] = useState([]);
-  const [accepltRender, setAcceptRender] = useState(false);
+  const [acceptRender, setAcceptRender] = useState(false);
   console.log('status', status);
   useEffect(() => {
     async function getMember() {
@@ -78,6 +79,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
 
         setNo(response.data[0].application_category);
         setStatus(response.data[0].status_id);
+        setHandler(response.data[0].handler);
       } catch (err) {
         console.log(err);
       }
@@ -97,7 +99,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
     toGetHandlerFile();
     toGetHandlerFileNo();
     toGetUpdateFile();
-  }, [render, accepltRender]);
+  }, [render, acceptRender]);
 
   // function getFileNameFromContentDisposition(contentDisposition) {
   //   if (!contentDisposition) return null;
@@ -219,7 +221,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
       }
       formData.append('fileNo', '-' + noTime);
       formData.append('No', No);
-
+      formData.append('handler', handler);
       formData.append('valid', valid);
       formData.append('number', parseInt(Date.now() / 10000));
       formData.append('create_time', endTime);
@@ -264,7 +266,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
     try {
       let response = await axios.patch(
         `http://localhost:3001/api/files/acceptFile/${caseNum}`,
-        { receiveTime: receiveTime, create_time: time }
+        { receiveTime: receiveTime, create_time: time, handler: handler }
       );
       Swal.fire({
         icon: 'success',
