@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 import '../../styles/caseDetail/_uploadPage.scss';
 import { useAuth } from '../../utils/use_auth';
 
-function UploadPage({ setAddStatus, addStatus, caseNum }) {
+function UploadPage({ setAddStatus, addStatus, caseNum, caseId }) {
   const [userFilesPage, setUserFilesPage] = useState(true);
   const [mgtFilesPage, setMgtUserFilesPage] = useState(false);
   const [filesData, setFilesData] = useState([{ fileName: '' }]);
@@ -21,6 +21,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
   const [render, setRender] = useState(false);
   const [No, setNo] = useState([]);
   const [status, setStatus] = useState([]);
+  // const [id, setId] = useState([]);
   const [handler, setHandler] = useState([]);
   const [valid, setValid] = useState('');
   const [getUpdateFile, setGetUpdateFile] = useState([]);
@@ -80,6 +81,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
         setNo(response.data[0].application_category);
         setStatus(response.data[0].status_id);
         setHandler(response.data[0].handler);
+        // setId(response.data[0].valid);
       } catch (err) {
         console.log(err);
       }
@@ -280,8 +282,13 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
       {/* 上傳檔案 */}
 
       {(member.permissions_id === 1 && status === 7) ||
-      member.permissions_id === 3 ||
-      member.permissions_id === 4 ? (
+      (member.permissions_id === 3 && status === 4) ||
+      status === 5 ||
+      status === 6 ||
+      status === 7 ||
+      status === 8 ||
+      status === 12 ||
+      status === 13 ? (
         <>
           <div className="addUpload">
             <div className="addTitle">
