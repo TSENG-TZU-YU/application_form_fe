@@ -325,6 +325,25 @@ function ApplicationForm({
     });
   };
 
+  // finish
+  let handleFinish = async () => {
+    let response = await axios.post(
+      `${API_URL}/applicationData/applicationFinish/${num}`,
+      { caseId },
+      {
+        withCredentials: true,
+      }
+    );
+    console.log(response.data);
+    Swal.fire({
+      icon: 'success',
+      title: '案件已完成',
+    }).then(function () {
+      setNeedLoading(!needLoading);
+      navigate(`/header`);
+    });
+  };
+
   return (
     <div className="appFormContainer">
       {/* 處理人申請狀態btn */}
@@ -517,7 +536,8 @@ function ApplicationForm({
                     needState !== 12 &&
                     needState !== 13 &&
                     needState !== 14 &&
-                    needState !== 15
+                    needState !== 15 &&
+                    needState !== 16
                       ? false
                       : true
                   }
@@ -568,7 +588,8 @@ function ApplicationForm({
         needState !== 12 &&
         needState !== 13 &&
         needState !== 14 &&
-        needState !== 15 ? (
+        needState !== 15 &&
+        needState !== 16 ? (
           <div className="selectContain">
             {/* <StateFilter /> */}
             <div className="selContain">
@@ -611,7 +632,9 @@ function ApplicationForm({
               確認
             </button>
             {needSumLen === needLen ? (
-              <button className="finishBtn">完成</button>
+              <button className="finishBtn" onClick={handleFinish}>
+                完成
+              </button>
             ) : (
               ''
             )}
