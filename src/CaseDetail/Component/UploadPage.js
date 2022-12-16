@@ -25,7 +25,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
   const [valid, setValid] = useState('');
   const [getUpdateFile, setGetUpdateFile] = useState([]);
   const [acceptRender, setAcceptRender] = useState(false);
-  console.log('status', status);
+
   useEffect(() => {
     async function getMember() {
       try {
@@ -179,8 +179,6 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
     }, [])
     .sort((a, b) => new Date(b.name) - new Date(a.name));
 
-  console.log('newGetUpdateFile', newGetUpdateFile);
-
   //   files upload
   //   update contain
   const handlerUpdateFile = (val, i, input) => {
@@ -211,12 +209,18 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
   };
   async function fileSubmit() {
     try {
-      //TODO:驗鎮是否有檔案在 無檔案不能上傳
-      // if (filesData.fileName !== '') {
       let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
       let noTime = moment(Date.now()).format('YYYYMMDD');
       const formData = new FormData();
       for (let i = 0; i < filesData.length; i++) {
+        // 這邊結束 不會往下跑
+        if (filesData[i].fileName === '') {
+          Swal.fire({
+            icon: 'error',
+            title: '無檔案',
+          });
+          return;
+        }
         formData.append(i, filesData[i].fileName);
       }
       formData.append('fileNo', '-' + noTime);
@@ -240,12 +244,6 @@ function UploadPage({ setAddStatus, addStatus, caseNum }) {
       });
       setFilesData([{ fileName: '' }]);
       setRender(false);
-      // } else {
-      //   Swal.fire({
-      //     icon: 'error',
-      //     title: '無檔案',
-      //   });
-      // }
     } catch (err) {
       console.log(err);
     }

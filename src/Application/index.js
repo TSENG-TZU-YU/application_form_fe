@@ -230,6 +230,13 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
         let noTime = moment(Date.now()).format('YYYYMMDD');
         const formData = new FormData();
         for (let i = 0; i < addFile.length; i++) {
+          if (addFile[i].file === '') {
+            Swal.fire({
+              icon: 'error',
+              title: '無檔案',
+            });
+            return;
+          }
           formData.append(i, addFile[i].file);
         }
         formData.append('fileNo', addNo + '-' + noTime);
