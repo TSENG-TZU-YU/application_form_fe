@@ -449,7 +449,8 @@ function ApplicationForm({
                     disabled
                   ></textarea>
                 </div>
-                {v.select_state === '案件進行中' ? (
+                {v.select_state === '案件進行中' &&
+                v.estimated_time !== undefined ? (
                   <div>
                     <span>預計完成時間：</span>
                     <span>{v.estimated_time}</span>

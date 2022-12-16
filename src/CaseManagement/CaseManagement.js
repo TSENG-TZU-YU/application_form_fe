@@ -53,12 +53,7 @@ function CaseManagement({ setCaseNum, setCaseId }) {
         withCredentials: true,
       });
       // console.log(response.data.result);
-      if (member.permissions_id === 1) {
-        setAllData(response.data.result);
-      }
-      if (member.permissions_id === 3) {
-        setAllData(response.data.handlerResult);
-      }
+      setAllData(response.data.result);
     };
     getCampingData();
   }, [member]);
