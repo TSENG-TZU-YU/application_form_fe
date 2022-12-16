@@ -11,6 +11,8 @@ function AddStateForm({
   handlePostVal,
   postVal,
   handlePostHandle,
+  postValRemind,
+  setPostValRemind,
 }) {
   return (
     <div className="addStatePageContain">
@@ -41,6 +43,7 @@ function AddStateForm({
                 name="transfer"
                 value={postVal.transfer}
                 onChange={(e) => {
+                  setPostValRemind(false);
                   handlePostVal(e);
                 }}
               >
@@ -55,6 +58,11 @@ function AddStateForm({
                   );
                 })}
               </select>
+              {postValRemind ? (
+                <span className="selectRemind">*請選擇轉件人員</span>
+              ) : (
+                ''
+              )}
             </div>
           ) : (
             ''

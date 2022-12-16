@@ -40,6 +40,11 @@
         width: 75%;
         @include scrollbarContain;
       }
+      .selectRemind {
+        font-size: 12px;
+        color: $focusClrG;
+        margin-left: 5px;
+      }
     }
     button {
       display: block;

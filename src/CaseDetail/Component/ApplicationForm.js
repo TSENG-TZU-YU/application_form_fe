@@ -17,6 +17,7 @@ function ApplicationForm({
   handlerSelect,
   setHandlerSelect,
   caseId,
+  caseNum,
 }) {
   const { num } = useParams();
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ function ApplicationForm({
   });
 
   const [selectRemind, setSelectRemind] = useState(false);
+  const [postValRemind, setPostValRemind] = useState(false);
   const [editVerifyPage, setEditVerifyPage] = useState(false);
   // 職權
   const [director, setDirectors] = useState(true);
@@ -57,7 +59,7 @@ function ApplicationForm({
     { title: '長期', value: '3' },
   ];
 
-  console.log('selectData', selectData);
+  // console.log('selectData', selectData);
 
   // 檢查會員
   useEffect(() => {
@@ -115,7 +117,7 @@ function ApplicationForm({
     };
 
     getCampingDetailData();
-  }, [num, needLoading, needState]);
+  }, [num, needLoading, needState, caseId, caseNum]);
 
   // 需求 checked
   const handleNeedChecked = async (needId, checked) => {
@@ -186,6 +188,10 @@ function ApplicationForm({
   // post 處理狀態
   const handlePostHandle = async (e) => {
     e.preventDefault();
+    if (postVal.transfer === '' && postVal.status === '轉件中') {
+      setPostValRemind(true);
+      return;
+    }
 
     let response = await axios.post(
       `${API_URL}/applicationData/postHandle`,
@@ -231,7 +237,7 @@ function ApplicationForm({
 
     let response = await axios.post(
       `${API_URL}/applicationData/postAddNeed`,
-      [detailData[0].handler, editNeed],
+      [detailData[0].handler, editNeed, caseId],
       {
         withCredentials: true,
       }
@@ -251,8 +257,9 @@ function ApplicationForm({
 
   // put 確認接收需求
   const handleCheckAccept = async () => {
-    let response = await axios.put(
+    let response = await axios.post(
       `${API_URL}/applicationData/putAcceptNeed/${num}`,
+      { caseId },
       {
         withCredentials: true,
       }
@@ -272,7 +279,7 @@ function ApplicationForm({
   let handleUserCancle = async () => {
     let response = await axios.post(
       `${API_URL}/applicationData/cancleAcc/${detailData[0].case_number}`,
-      { user: detailData[0].user },
+      { user: detailData[0].user, id: caseId },
       {
         withCredentials: true,
       }
@@ -358,6 +365,8 @@ function ApplicationForm({
           handlerVal={handlerVal}
           postVal={postVal}
           handlePostHandle={handlePostHandle}
+          postValRemind={postValRemind}
+          setPostValRemind={setPostValRemind}
         />
       ) : (
         ''
@@ -376,6 +385,7 @@ function ApplicationForm({
           hanleAddNeed={hanleAddNeed}
           editVerifyPage={editVerifyPage}
           setEditVerifyPage={setEditVerifyPage}
+          caseId={caseId}
         />
       ) : (
         ''

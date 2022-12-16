@@ -12,7 +12,7 @@ function EditNeedPage({
   handlerUpdateNeed,
   hanleAddNeed,
   editVerifyPage,
-  setEditVerifyPage,
+  caseId,
 }) {
   console.log(editNeed);
   return (
