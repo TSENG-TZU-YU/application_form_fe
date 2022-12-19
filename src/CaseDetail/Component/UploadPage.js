@@ -217,7 +217,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum, caseId, delCheck }) {
   async function fileSubmit() {
     try {
       let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
-      let noTime = moment(Date.now()).format('YYYYMMDD');
+      let noTime = moment(Date.now()).format('YYYYMMDDHHmmss');
       const formData = new FormData();
       for (let i = 0; i < filesData.length; i++) {
         // 這邊結束 不會往下跑
