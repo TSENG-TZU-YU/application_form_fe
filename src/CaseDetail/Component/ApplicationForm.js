@@ -654,7 +654,9 @@ function ApplicationForm({
           ''
         ) : (
           <>
-            {addStatus &&
+            {!addStatus &&
+            needState !== 1 &&
+            needState !== 2 &&
             needState !== 3 &&
             needState !== 6 &&
             needState !== 9 &&
