@@ -62,8 +62,6 @@ function Application({
   const addN = () => {
     const newAdd = { title: '', text: '' };
     const newAdds = [...addNeed, newAdd];
-    console.log('add', newAdds);
-
     setAddNeed(newAdds);
   };
   //填入需求
@@ -95,7 +93,7 @@ function Application({
   const deleteFile = (i) => {
     let newData = [...addFile];
     newData.splice(i, 1); //刪除1個
-    if (newData.length === 0) return; //if長度=0 無法再刪除
+    if (addFile.length === 0) return; //if長度=0 無法再刪除
     setAddFile(newData);
   };
   // 清空檔案
@@ -178,6 +176,15 @@ function Application({
         addNeed[0].title !== '' &&
         addNeed[0].text !== ''
       ) {
+        for (let i = 0; i < addFile.length; i++) {
+          if (addFile[i].file === '') {
+            Swal.fire({
+              icon: 'error',
+              title: '無檔案',
+            });
+            return;
+          }
+        }
         Swal.fire({
           icon: 'success',
           title: '已送出申請',
@@ -237,16 +244,9 @@ function Application({
         addNeed[0].text !== ''
       ) {
         let endTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
-        let noTime = moment(Date.now()).format('YYYYMMDD');
+        let noTime = moment(Date.now()).format('YYYYMMDDHHmmss');
         const formData = new FormData();
         for (let i = 0; i < addFile.length; i++) {
-          if (addFile[i].file === '') {
-            Swal.fire({
-              icon: 'error',
-              title: '無檔案',
-            });
-            return;
-          }
           formData.append(i, addFile[i].file);
         }
         formData.append('fileNo', addNo + '-' + noTime);
@@ -485,7 +485,7 @@ function Application({
                 <input
                   className="input d-none"
                   type="file"
-                  name="upFile"
+                  name="file"
                   id={`file${i}`}
                   accept=".csv,.txt,.text,.png,.jpeg,.jpg,text/csv,.pdf,.xlsx"
                   onChange={(e) => {

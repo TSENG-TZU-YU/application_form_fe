@@ -115,11 +115,16 @@ function UploadPage({ setAddStatus, addStatus, caseNum, caseId, delCheck }) {
 
   // },[ fileName])
 
-  const handleDownload = async (fileName) => {
+  const handleDownload = async (fileName, fileNo) => {
+    let str = fileNo.indexOf('-');
+    let dbTime = fileNo.substr(str + 1, 6);
+
     await axios({
-      url: 'http://localhost:3001/api/files',
+      url: `http://localhost:3001/api/files/${caseNum}`,
       data: {
         name: fileName,
+        dbTime: dbTime,
+        fileNo: fileNo,
       },
       method: 'POST',
       responseType: 'blob', // important 下載檔案需要轉
@@ -465,7 +470,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum, caseId, delCheck }) {
                         <span
                           className="download"
                           onClick={() => {
-                            handleDownload(v.name);
+                            handleDownload(v.name, v.file_no);
                           }}
                         >
                           {v.name}
@@ -491,7 +496,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum, caseId, delCheck }) {
                         <span
                           className="download"
                           onClick={() => {
-                            handleDownload(v.name);
+                            handleDownload(v.name, v.file_no);
                           }}
                         >
                           {v.name}
