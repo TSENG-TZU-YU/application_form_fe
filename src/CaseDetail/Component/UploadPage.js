@@ -283,12 +283,12 @@ function UploadPage({ setAddStatus, addStatus, caseNum, caseId }) {
 
       {(member.permissions_id === 1 && status === 7) ||
       (member.permissions_id === 3 && status === 4) ||
-      status === 5 ||
-      status === 6 ||
-      status === 7 ||
-      status === 8 ||
-      status === 12 ||
-      status === 13 ? (
+      (member.permissions_id === 3 && status === 5) ||
+      (member.permissions_id === 3 && status === 6) ||
+      (member.permissions_id === 3 && status === 7) ||
+      (member.permissions_id === 3 && status === 8) ||
+      (member.permissions_id === 3 && status === 12) ||
+      (member.permissions_id === 3 && status === 13) ? (
         <>
           <div className="addUpload">
             <div className="addTitle">
