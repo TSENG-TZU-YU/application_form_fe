@@ -328,11 +328,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum, caseId, delCheck }) {
                       <AiFillCloseCircle
                         className="delIcon"
                         onClick={() => {
-                          delCheck(
-                            '確定要刪除所有上傳文件',
-                            handleClearFile,
-                            i
-                          );
+                          delCheck('確定要刪除此上傳文件', handleDelFile, i);
                         }}
                       />
                     ) : (

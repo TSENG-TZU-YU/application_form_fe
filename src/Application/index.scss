@@ -43,7 +43,9 @@
           margin-left: 5px;
         }
       }
-
+      .contain {
+        height: 100px;
+      }
       .handler {
         width: 250px;
         text-align: center;
@@ -52,6 +54,13 @@
           margin-right: 8px;
           margin-top: 4px;
         }
+      }
+      .otherText {
+        margin-top: 10px;
+        display: block;
+      }
+      .disNone {
+        display: none;
       }
 
       .check {
@@ -80,7 +89,7 @@
         cursor: pointer;
         color: $focusClrG;
       }
-    
+
       & .need:first-child {
         .two {
           display: none;

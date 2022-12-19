@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import moment from 'moment';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 
 //react-icons
 import { MdOutlineAddBox } from 'react-icons/md';
@@ -52,6 +53,8 @@ function Application({
     if (input === 'name') newData[0].name = val;
     if (input === 'cycle') newData[0].cycle = val;
 
+    // if(newData.)
+    console.log(newData);
     setSubmitValue(newData);
   };
 
@@ -271,6 +274,7 @@ function Application({
         <h3>申請表</h3>
         <div className="vector"></div>
         <div className="box">
+          {/* 處理人 */}
           <div className="gap">
             <div>處理人{handler ? <span>*請選擇處理人</span> : ''}</div>
             <select
@@ -294,45 +298,6 @@ function Application({
                 );
               })}
             </select>
-          </div>
-          <div className="gap">
-            <div>申請類別{category ? <span>*請選擇申請類別</span> : ''}</div>
-            <select
-              className="handler"
-              onChange={(e) => {
-                handleChange(e.target.value, 'category');
-                setAddNo(e.target.value);
-              }}
-              onClick={(e) => {
-                if (e.target.value !== '0') {
-                  setCategory(false);
-                }
-              }}
-            >
-              <option value="0">-----請選擇類別-----</option>
-              {getCategory.map((v, i) => {
-                return (
-                  <option key={i} value={v.number}>
-                    {v.name}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-        </div>
-        <div className="box">
-          <div className="gap">
-            <div>專案名稱{name ? <span>*請輸入專案名稱</span> : ''}</div>
-            <input
-              className="handler"
-              type="text"
-              onChange={(e) => {
-                handleChange(e.target.value, 'name');
-                if (e.target.value !== '') {
-                  setName(false);
-                }
-              }}
-            />
           </div>
           {/* 週期 */}
           <div className="gap">
@@ -360,6 +325,54 @@ function Application({
                 );
               })}
             </div>
+          </div>
+        </div>
+        <div className="box">
+          {/* 申請類別 */}
+          <div className="gap">
+            <div>申請類別{category ? <span>*請選擇申請類別</span> : ''}</div>
+            <select
+              className="handler"
+              onChange={(e) => {
+                handleChange(e.target.value, 'category');
+                setAddNo(e.target.value);
+              }}
+              onClick={(e) => {
+                if (e.target.value !== '0') {
+                  setCategory(false);
+                }
+              }}
+            >
+              <option value="0">-----請選擇類別-----</option>
+              {getCategory.map((v, i) => {
+                return (
+                  <option key={i} value={v.number}>
+                    {v.name}
+                  </option>
+                );
+              })}
+            </select>
+            {/* <input
+              type="text"
+              className={`handler otherText mt-2 ${
+                submitValue[0].category !== 'OTH' ? 'disNone' : ''
+              }`}
+              placeholder="請輸入類別名稱"
+            /> */}
+          </div>
+          {/* 專案名稱 */}
+          <div className="gap">
+            <div>專案名稱{name ? <span>*請輸入專案名稱</span> : ''}</div>
+            <input
+              className="handler"
+              type="text"
+              onChange={(e) => {
+                handleChange(e.target.value, 'name');
+                if (e.target.value !== '') {
+                  setName(false);
+                }
+              }}
+            />
           </div>
         </div>
         {/* 需求 */}
@@ -451,7 +464,7 @@ function Application({
           </div>
           {addFile.map((v, i) => {
             return (
-              <div key={i} className="two">
+              <div key={uuidv4()} className="two">
                 <label className="addUploadContainer" htmlFor={`file${i}`}>
                   {/* 數字大於10 會因大小移位 */}
                   <span className={`items ${i < 9 ? 'ps-2' : ''}`}>
