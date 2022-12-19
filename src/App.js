@@ -1,8 +1,8 @@
 import './App.css';
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
 import Header from './Header';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-
 import LogIn from './LogIn/LogIn.js';
 
 // 登入元件
@@ -25,9 +25,25 @@ function App() {
   const [caseNum, setCaseNum] = useState('');
   const [caseId, setCaseId] = useState('');
 
-  // console.log('application', application);
-  // console.log('caseManagement', caseManagement);
-  // console.log('trial', trial);
+  // 刪除sweet
+  function delCheck(tit, fun, i) {
+    Swal.fire({
+      title: tit,
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: '確定刪除',
+      denyButtonText: `取消刪除`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        Swal.fire('刪除成功', '', 'success');
+        console.log('f', fun);
+        fun(i);
+      } else if (result.isDenied) {
+        Swal.fire('已取消刪除', '', 'info');
+      }
+    });
+  }
 
   return (
     <BrowserRouter>
@@ -60,10 +76,12 @@ function App() {
                   setApplication={setApplication}
                   setCaseManagement={setCaseManagement}
                   setTrial={setTrial}
+                  delCheck={delCheck}
                 />
               }
             />
             {/* detail */}
+
             <Route path="caseDetail" element={<CaseDetail caseNum={caseNum} />}>
               <Route
                 // index
@@ -76,6 +94,7 @@ function App() {
                     handlerSelect={handlerSelect}
                     setHandlerSelect={setHandlerSelect}
                     caseId={caseId}
+                    delCheck={delCheck}
                   />
                 }
               />
@@ -88,6 +107,7 @@ function App() {
                     addStatus={addStatus}
                     caseNum={caseNum}
                     caseId={caseId}
+                    delCheck={delCheck}
                   />
                 }
               />

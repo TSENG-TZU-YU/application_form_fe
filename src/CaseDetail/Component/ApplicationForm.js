@@ -18,6 +18,7 @@ function ApplicationForm({
   setHandlerSelect,
   caseId,
   caseNum,
+  delCheck,
 }) {
   const { num } = useParams();
   const navigate = useNavigate();
@@ -386,6 +387,7 @@ function ApplicationForm({
           editVerifyPage={editVerifyPage}
           setEditVerifyPage={setEditVerifyPage}
           caseId={caseId}
+          delCheck={delCheck}
         />
       ) : (
         ''
