@@ -7,7 +7,7 @@ const sortOption = [
   { value: 1, label: '新專案建置' },
   { value: 2, label: '現有系統增修' },
   { value: 3, label: '問題回報' },
-  { value: 4, label: '其他' },
+  // { value: 4, label: '其他' },
 ];
 
 const customStyles = {

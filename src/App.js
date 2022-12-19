@@ -37,7 +37,6 @@ function App() {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
         Swal.fire('刪除成功', '', 'success');
-        console.log('f', fun);
         fun(i);
       } else if (result.isDenied) {
         Swal.fire('已取消刪除', '', 'info');
