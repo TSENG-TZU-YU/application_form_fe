@@ -124,6 +124,7 @@ function UploadPage({ setAddStatus, addStatus, caseNum, caseId, delCheck }) {
       data: {
         name: fileName,
         dbTime: dbTime,
+        fileNo: fileNo,
       },
       method: 'POST',
       responseType: 'blob', // important 下載檔案需要轉
