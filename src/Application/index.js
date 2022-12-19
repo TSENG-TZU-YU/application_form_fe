@@ -362,7 +362,7 @@ function Application({
           </div>
           {/* 專案名稱 */}
           <div className="gap">
-            <div>專案名稱{name ? <span>*請輸入專案名稱</span> : ''}</div>
+            <div> 專案名稱{name ? <span>*請輸入名稱</span> : ''}</div>
             <input
               className="handler"
               type="text"
