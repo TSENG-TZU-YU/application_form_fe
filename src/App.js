@@ -87,6 +87,7 @@ function App() {
                     setAddStatus={setAddStatus}
                     addStatus={addStatus}
                     caseNum={caseNum}
+                    caseId={caseId}
                   />
                 }
               />
