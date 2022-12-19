@@ -14,7 +14,12 @@ import { FaTrashAlt } from 'react-icons/fa';
 //hook
 import { useAuth } from '../utils/use_auth';
 
-function Application({ setApplication, setCaseManagement, setTrial }) {
+function Application({
+  setApplication,
+  setCaseManagement,
+  setTrial,
+  delCheck,
+}) {
   const navigate = useNavigate();
   const [addNeed, setAddNeed] = useState([{ title: '', text: '' }]);
   const [addFile, setAddFile] = useState([{ file: '' }]);
@@ -54,6 +59,8 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
   const addN = () => {
     const newAdd = { title: '', text: '' };
     const newAdds = [...addNeed, newAdd];
+    console.log('add', newAdds);
+
     setAddNeed(newAdds);
   };
   //填入需求
@@ -359,7 +366,9 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
         <div className="add handler">
           <FaTrashAlt
             size="17"
-            onClick={handleClearNeed}
+            onClick={() => {
+              delCheck('確定要刪除所有需求內容?', handleClearNeed);
+            }}
             className="clearIcon"
           />
           <MdOutlineAddBox size="20" onClick={addN} className="addIcon" />
@@ -376,7 +385,9 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
                   <IoMdCloseCircle
                     className="two"
                     size="20"
-                    onClick={deleteNeed}
+                    onClick={() => {
+                      delCheck('確定要刪除此需求?', deleteNeed, i);
+                    }}
                   />
                 </div>
 
@@ -430,7 +441,9 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
             <div className="fileIcon">
               <FaTrashAlt
                 size="17"
-                onClick={handleClearFile}
+                onClick={() => {
+                  delCheck('確定要刪除所有上傳檔案?', handleClearFile);
+                }}
                 className="clearIcon"
               />
               <MdOutlineAddBox size="20" onClick={addF} className="addIcon" />
@@ -466,7 +479,12 @@ function Application({ setApplication, setCaseManagement, setTrial }) {
                     onFileUpload(e.target.files[0], i, 'file');
                   }}
                 />
-                <IoMdCloseCircle size="20" onClick={deleteFile} />
+                <IoMdCloseCircle
+                  size="20"
+                  onClick={() => {
+                    delCheck('確定要刪除此上傳檔案?', deleteFile, i);
+                  }}
+                />
               </div>
             );
           })}

@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 import '../../styles/caseDetail/_uploadPage.scss';
 import { useAuth } from '../../utils/use_auth';
 
-function UploadPage({ setAddStatus, addStatus, caseNum, caseId }) {
+function UploadPage({ setAddStatus, addStatus, caseNum, caseId, delCheck }) {
   const [userFilesPage, setUserFilesPage] = useState(true);
   const [mgtFilesPage, setMgtUserFilesPage] = useState(false);
   const [filesData, setFilesData] = useState([{ fileName: '' }]);
@@ -299,7 +299,12 @@ function UploadPage({ setAddStatus, addStatus, caseNum, caseId }) {
               請新增上傳附件(可上傳副檔名.pdf / img...)
             </div>
             <div>
-              <FaTrashAlt className="trashIcon" onClick={handleClearFile} />
+              <FaTrashAlt
+                className="trashIcon"
+                onClick={() => {
+                  delCheck('確定要刪除所有上傳文件', handleClearFile);
+                }}
+              />
               <MdOutlineAddBox className="addIcon" onClick={handleAddFile} />
             </div>
           </div>
@@ -327,7 +332,11 @@ function UploadPage({ setAddStatus, addStatus, caseNum, caseId }) {
                       <AiFillCloseCircle
                         className="delIcon"
                         onClick={() => {
-                          handleDelFile(i);
+                          delCheck(
+                            '確定要刪除所有上傳文件',
+                            handleClearFile,
+                            i
+                          );
                         }}
                       />
                     ) : (

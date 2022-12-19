@@ -13,6 +13,7 @@ function EditNeedPage({
   hanleAddNeed,
   editVerifyPage,
   caseId,
+  delCheck,
 }) {
   console.log(editNeed);
   return (
@@ -47,7 +48,7 @@ function EditNeedPage({
                     <AiFillCloseCircle
                       className="delNeedIcon"
                       onClick={() => {
-                        handleDelNeed(i);
+                        delCheck('確定要刪除此需求內容?', handleDelNeed, i);
                       }}
                     />
                   ) : (
